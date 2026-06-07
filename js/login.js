@@ -227,16 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     btnLogout.addEventListener('click', () => {
         localStorage.removeItem('session_active');
-        authCard.classList.remove('wide');
         welcomeBlock.style.display   = 'none';
         authFormsBlock.style.display = 'block';
 
-        isLoginMode = true; // Forzar que vuelva a modo login
-        formTitle.textContent    = 'Iniciar Sesión';
-        formSubtitle.textContent = 'Introduce tus credenciales para acceder';
-        btnSubmit.textContent    = 'Ingresar';
-        toggleText.textContent   = '¿No tienes una cuenta?';
-        toggleFormLink.textContent = 'Regístrate aquí';
+        isLoginMode = false;
+        toggleFormLink.click();
 
         clearForm(authForm);
         clearForm(changePasswordForm);
@@ -268,12 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
         formElement.reset();
     }
 
-    /** Muestra el dashboard y oculta el formulario de auth */
+    /** Muestra el dashboard como overlay de pantalla completa (fix CLS) */
     function showDashboard(username) {
         authFormsBlock.style.display = 'none';
-        authCard.classList.add('wide');
-        welcomeBlock.style.display = 'block';
-        displayUser.textContent    = username;
+        welcomeBlock.style.display   = 'block';
+        displayUser.textContent      = username;
     }
 
 });
