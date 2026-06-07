@@ -231,8 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
         welcomeBlock.style.display   = 'none';
         authFormsBlock.style.display = 'block';
 
-        isLoginMode = false;
-        toggleFormLink.click();
+        isLoginMode = true; // Forzar que vuelva a modo login
+        formTitle.textContent    = 'Iniciar Sesión';
+        formSubtitle.textContent = 'Introduce tus credenciales para acceder';
+        btnSubmit.textContent    = 'Ingresar';
+        toggleText.textContent   = '¿No tienes una cuenta?';
+        toggleFormLink.textContent = 'Regístrate aquí';
 
         clearForm(authForm);
         clearForm(changePasswordForm);
