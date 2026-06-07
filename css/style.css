@@ -9,7 +9,7 @@
     --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --card-bg: #ffffff;
     --text-main: #333333;
-    --text-muted: #666666;
+    --text-muted: #545454;
     --primary-color: #667eea;
     --primary-hover: #5a73e8;
     --success-color: #2ed573;
@@ -95,8 +95,28 @@ body {
     transition: var(--transition);
 }
 
+/* Fix CLS: el dashboard ocupa toda la pantalla como overlay,
+   sin modificar el layout de la tarjeta de login */
 .auth-container.wide {
+    max-width: 400px;
+}
+
+#welcomeBlock {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-gradient);
+    overflow-y: auto;
+    padding: 2rem;
+    z-index: 100;
+}
+
+#welcomeBlock .dashboard-inner {
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
 }
 
 /* --- ENCABEZADO DEL FORMULARIO --- */
@@ -249,9 +269,7 @@ body.dark-mode .alert-message.success {
 }
 
 /* --- DASHBOARD --- */
-.welcome-screen {
-    display: none;
-}
+/* display controlado por JS - ver login.js showDashboard() */
 
 .dashboard-top-bar {
     display: flex;
