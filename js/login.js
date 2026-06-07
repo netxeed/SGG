@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     const DEFAULT_USERS = [
         { username: 'admin',   password: 'admin123' },
-        { username: 'santino', password: 'sgg2025'  }
+        { username: 'santino', password: 'contrasena'  }
     ];
 
     DEFAULT_USERS.forEach(({ username, password }) => {
