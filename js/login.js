@@ -13,11 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // MÓDULO 1: USUARIOS PREDETERMINADOS
-    // Requisito obligatorio: dos usuarios de prueba
     // ============================================
     const DEFAULT_USERS = [
         { username: 'admin',   password: 'admin123' },
-        { username: 'santino', password: 'sgg2025'  }
+        { username: 'santino', password: 'contrasena'  }
     ];
 
     DEFAULT_USERS.forEach(({ username, password }) => {
