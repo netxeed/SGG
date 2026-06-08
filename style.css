@@ -1,0 +1,223 @@
+/* ============================================
+   SGG - Sistema de Gestión de Gastos
+   style.css — Primer Incremento: Login
+   Principio DRY: variables centralizadas en :root
+   ============================================ */
+
+/* --- MODO CLARO (por defecto) --- */
+:root {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --text-muted: #545454;
+    --primary-color: #667eea;
+    --primary-hover: #5a73e8;
+    --success-color: #1a9e4a;
+    --error-color: #ff4757;
+    --input-bg: #f1f2f6;
+    --hint-bg: #f8f9ff;
+    --hint-border: #e0e4ff;
+    --radius: 8px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- MODO OSCURO --- */
+body.dark-mode {
+    --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --card-bg: #1e1e2e;
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0b0;
+    --primary-color: #818cf8;
+    --primary-hover: #6d7bfa;
+    --input-bg: #2a2a3e;
+    --hint-bg: #252535;
+    --hint-border: #3a3a5e;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* --- RESET GLOBAL --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    transition: background 0.4s ease;
+}
+
+/* --- BOTÓN SWITCH TEMA --- */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--card-bg);
+    border: 2px solid var(--input-bg);
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.auth-container {
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem 2rem;
+}
+
+/* --- ENCABEZADO --- */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    letter-spacing: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header h2 {
+    color: var(--text-main);
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* --- FORMULARIO --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group label {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    background-color: var(--input-bg);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: var(--transition);
+    width: 100%;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--card-bg);
+}
+
+/* --- BOTÓN --- */
+.btn-submit {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.9rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-submit:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* --- MENSAJES DE ALERTA (WCAG: role=alert) --- */
+.alert-message {
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    display: none;
+    margin-bottom: 1rem;
+}
+
+.alert-message.error {
+    background-color: #ffe0e3;
+    color: var(--error-color);
+    display: block;
+}
+
+.alert-message.success {
+    background-color: #d1f7e2;
+    color: var(--success-color);
+    display: block;
+}
+
+body.dark-mode .alert-message.error {
+    background-color: #3d1a1e;
+    color: #ff6b78;
+}
+
+body.dark-mode .alert-message.success {
+    background-color: #1a3d2a;
+    color: #4ade80;
+}
+
+/* --- CAJA DE USUARIOS DE PRUEBA --- */
+.hint-box {
+    margin-top: 1.5rem;
+    background-color: var(--hint-bg);
+    border: 1px solid var(--hint-border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.hint-box code {
+    background-color: var(--input-bg);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
