@@ -104,14 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
             formTitle.textContent    = 'Iniciar Sesión';
             formSubtitle.textContent = 'Introduce tus credenciales para acceder';
             btnSubmit.textContent    = 'Ingresar';
-            toggleText.textContent   = '¿No tienes una cuenta?';
-            toggleFormLink.textContent = 'Regístrate aquí';
+            toggleText.textContent   = '¿No tenés cuenta?';
+            toggleFormLink.textContent = 'Registrate acá';
         } else {
             formTitle.textContent    = 'Crear Cuenta';
             formSubtitle.textContent = 'Elegí un usuario y contraseña para registrarte';
             btnSubmit.textContent    = 'Registrarse';
-            toggleText.textContent   = '¿Ya tienes una cuenta?';
-            toggleFormLink.textContent = 'Inicia sesión';
+            toggleText.textContent   = '¿Ya tenés cuenta?';
+            toggleFormLink.textContent = 'Iniciá sesión';
         }
     });
 
