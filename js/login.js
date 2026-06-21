@@ -49,10 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // MÓDULO 3: SELECTORES
     // ============================================
-    const loginForm     = document.getElementById('loginForm');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const alertBox      = document.getElementById('alertBox');
+    const loginForm      = document.getElementById('loginForm');
+    const usernameInput  = document.getElementById('username');
+    const passwordInput  = document.getElementById('password');
+    const alertBox       = document.getElementById('alertBox');
+
+    const toggleFormLink = document.getElementById('toggleFormLink');
+    const toggleText     = document.getElementById('toggleText');
+
+    const formTitle      = document.querySelector('.auth-header h2');
+    const formSubtitle   = document.querySelector('.auth-header p');
+    const submitButton   = document.querySelector('.btn-submit');
+
+    let isLoginMode = true;
 
 
     // ============================================
@@ -101,6 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideAlert(element) {
         element.textContent = '';
         element.className   = 'alert-message';
+    }
+
+    /** Limpia todos los campos de un formulario */
+    function clearForm(formElement) {
+        formElement.reset();
     }
 
 });
