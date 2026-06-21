@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Iniciá sesión para administrar tus finanzas personales.">
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Iniciá sesión o registrate para administrar tus finanzas personales.">
     <title>SGG - Inicio de Sesión</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <!-- Botón switch día/noche -->
     <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
         <span id="themeIcon">🌙</span>
     </button>
-    <!-- Formulario Inicio de Sesion/Registro -->
+
     <div class="auth-container">
 
         <div class="auth-header">
-            <h2>Iniciar Sesión</h2>
-            <p>Introduce tus credenciales para acceder</p>
+            <h2 id="formTitle">Iniciar Sesión</h2>
+            <p id="formSubtitle">Introduce tus credenciales para acceder</p>
         </div>
 
         <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
 
-        <form id="loginForm" class="auth-form" novalidate>
+        <form id="authForm" class="auth-form" novalidate>
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
                 <input type="text" id="username" required placeholder="Ej. admin" autocomplete="username">
@@ -34,16 +33,14 @@
                 <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
             </div>
 
-            <button type="submit" class="btn-submit">Ingresar</button>
+            <button type="submit" id="btnSubmit" class="btn-submit">Ingresar</button>
         </form>
 
-        <!-- Consulta de Registro -->
         <div class="auth-toggle">
             <span id="toggleText">¿No tenés cuenta?</span>
             <a href="#" id="toggleFormLink">Registrate acá</a>
         </div>
-        
-        <!-- Usuarios de prueba -->
+
         <div class="hint-box" aria-label="Usuarios de prueba disponibles">
             <p><strong>Usuarios de prueba:</strong></p>
             <p>👤 <code>admin</code> / <code>admin123</code></p>
@@ -52,7 +49,6 @@
 
     </div>
 
-    <!-- JS separado - Principio de Modularidad -->
     <script src="js/login.js"></script>
 </body>
 </html>
