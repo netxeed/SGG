@@ -1,9 +1,9 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Primer Incremento: Login + Registro
+ * login.js — Segundo Incremento: Registro
  *
  * Principios aplicados:
- *  - DRY: funciones reutilizables showAlert(), hideAlert(), clearForm()
+ *  - DRY: funciones reutilizables showAlert() y hideAlert()
  *  - ETC: lógica separada del HTML, fácil de modificar
  *  - Ortogonalidad: módulo de tema independiente del módulo de auth
  *  - WCAG: mensajes con role="alert", foco accesible en botones
