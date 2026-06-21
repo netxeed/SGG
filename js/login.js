@@ -1,9 +1,9 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Primer Incremento: Login
+ * login.js — Primer Incremento: Login + Registro
  *
  * Principios aplicados:
- *  - DRY: funciones reutilizables showAlert() y hideAlert()
+ *  - DRY: funciones reutilizables showAlert(), hideAlert(), clearForm()
  *  - ETC: lógica separada del HTML, fácil de modificar
  *  - Ortogonalidad: módulo de tema independiente del módulo de auth
  *  - WCAG: mensajes con role="alert", foco accesible en botones
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     const DEFAULT_USERS = [
         { username: 'admin',   password: 'admin123' },
-        { username: 'santino', password: 'contrasena'  }
+        { username: 'santino', password: 'contrasena' }
     ];
 
     DEFAULT_USERS.forEach(({ username, password }) => {
@@ -26,10 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     // ============================================
     // MÓDULO 2: SWITCH DE TEMA (DÍA / NOCHE)
-    // Ortogonal: no depende del módulo de auth
     // ============================================
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
@@ -45,36 +43,55 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-
     // ============================================
     // MÓDULO 3: SELECTORES
     // ============================================
-    const loginForm      = document.getElementById('loginForm');
-    const usernameInput  = document.getElementById('username');
-    const passwordInput  = document.getElementById('password');
+    const authForm       = document.getElementById('authForm');
+    const usernameInput   = document.getElementById('username');
+    const passwordInput   = document.getElementById('password');
     const alertBox       = document.getElementById('alertBox');
-
+    const btnSubmit      = document.getElementById('btnSubmit');
+    const formTitle      = document.getElementById('formTitle');
+    const formSubtitle   = document.getElementById('formSubtitle');
     const toggleFormLink = document.getElementById('toggleFormLink');
     const toggleText     = document.getElementById('toggleText');
 
-    const formTitle      = document.querySelector('.auth-header h2');
-    const formSubtitle   = document.querySelector('.auth-header p');
-    const submitButton   = document.querySelector('.btn-submit');
-
     let isLoginMode = true;
 
+    // ============================================
+    // MÓDULO 4: ALTERNAR LOGIN / REGISTRO
+    // ============================================
+    toggleFormLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        clearForm(authForm);
+        hideAlert(alertBox);
+
+        if (isLoginMode) {
+            formTitle.textContent      = 'Iniciar Sesión';
+            formSubtitle.textContent   = 'Introduce tus credenciales para acceder';
+            btnSubmit.textContent      = 'Ingresar';
+            toggleText.textContent     = '¿No tenés cuenta?';
+            toggleFormLink.textContent = 'Registrate acá';
+        } else {
+            formTitle.textContent      = 'Crear Cuenta';
+            formSubtitle.textContent   = 'Elegí un usuario y contraseña para registrarte';
+            btnSubmit.textContent      = 'Registrarse';
+            toggleText.textContent     = '¿Ya tenés cuenta?';
+            toggleFormLink.textContent = 'Iniciá sesión';
+        }
+    });
 
     // ============================================
-    // MÓDULO 4: LÓGICA DE LOGIN
+    // MÓDULO 5: LÓGICA DE LOGIN / REGISTRO
     // ============================================
-    loginForm.addEventListener('submit', (e) => {
+    authForm.addEventListener('submit', (e) => {
         e.preventDefault();
         hideAlert(alertBox);
 
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Validación: campos vacíos
         if (!username || !password) {
             showAlert(alertBox, 'Por favor, completá todos los campos.', 'error');
             return;
@@ -83,38 +100,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const storageKey     = `user_${username.toLowerCase()}`;
         const storedPassword = localStorage.getItem(storageKey);
 
-        if (!storedPassword) {
-            // Error: usuario no registrado
-            showAlert(alertBox, 'Usuario no registrado.', 'error');
-        } else if (storedPassword !== password) {
-            // Error: contraseña incorrecta
-            showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
+        if (isLoginMode) {
+            if (!storedPassword) {
+                showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
+            } else if (storedPassword !== password) {
+                showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
+            } else {
+                showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
+                clearForm(authForm);
+            }
         } else {
-            // Éxito: acceso concedido
-            showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
+            if (storedPassword) {
+                showAlert(alertBox, 'El nombre de usuario ya está registrado.', 'error');
+            } else {
+                localStorage.setItem(storageKey, password);
+                showAlert(alertBox, '¡Registro exitoso! Ya podés iniciar sesión.', 'success');
+                clearForm(authForm);
+                setTimeout(() => toggleFormLink.click(), 1200);
+            }
         }
     });
-
 
     // ============================================
     // FUNCIONES AUXILIARES (DRY)
     // ============================================
-
-    /** Muestra un mensaje de alerta accesible */
     function showAlert(element, message, type) {
         element.textContent = message;
         element.className   = `alert-message ${type}`;
     }
 
-    /** Oculta y limpia un mensaje de alerta */
     function hideAlert(element) {
         element.textContent = '';
         element.className   = 'alert-message';
     }
 
-    /** Limpia todos los campos de un formulario */
     function clearForm(formElement) {
         formElement.reset();
     }
-
 });
