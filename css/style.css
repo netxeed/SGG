@@ -221,3 +221,21 @@ body.dark-mode .alert-message.success {
     color: var(--primary-color);
     font-weight: 600;
 }
+
+/* --- ENLACE ALTERNAR LOGIN/REGISTRO --- */
+.auth-toggle {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-toggle a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
