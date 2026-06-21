@@ -1,10 +1,8 @@
 /* ============================================
    SGG - Sistema de Gestión de Gastos
-   style.css — Primer Incremento: Login
-   Principio DRY: variables centralizadas en :root
+   style.css — Login + Registro
    ============================================ */
 
-/* --- MODO CLARO (por defecto) --- */
 :root {
     --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --card-bg: #ffffff;
@@ -22,7 +20,6 @@
     --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* --- MODO OSCURO --- */
 body.dark-mode {
     --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     --card-bg: #1e1e2e;
@@ -36,7 +33,6 @@ body.dark-mode {
     --shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* --- RESET GLOBAL --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -54,7 +50,6 @@ body {
     transition: background 0.4s ease;
 }
 
-/* --- BOTÓN SWITCH TEMA --- */
 .theme-toggle {
     position: fixed;
     top: 1rem;
@@ -74,7 +69,6 @@ body {
     transform: scale(1.1);
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
 .auth-container {
     background-color: var(--card-bg);
     border-radius: var(--radius);
@@ -84,7 +78,6 @@ body {
     padding: 2.5rem 2rem;
 }
 
-/* --- ENCABEZADO --- */
 .auth-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -108,7 +101,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* --- FORMULARIO --- */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -144,7 +136,6 @@ body {
     background-color: var(--card-bg);
 }
 
-/* --- BOTÓN --- */
 .btn-submit {
     background-color: var(--primary-color);
     color: white;
@@ -168,7 +159,6 @@ body {
     outline-offset: 2px;
 }
 
-/* --- MENSAJES DE ALERTA (WCAG: role=alert) --- */
 .alert-message {
     padding: 0.8rem;
     border-radius: var(--radius);
@@ -201,7 +191,23 @@ body.dark-mode .alert-message.success {
     color: #4ade80;
 }
 
-/* --- CAJA DE USUARIOS DE PRUEBA --- */
+.auth-toggle {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-toggle a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
 .hint-box {
     margin-top: 1.5rem;
     background-color: var(--hint-bg);
@@ -222,20 +228,8 @@ body.dark-mode .alert-message.success {
     font-weight: 600;
 }
 
-/* --- ENLACE ALTERNAR LOGIN/REGISTRO --- */
-.auth-toggle {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.auth-toggle a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.auth-toggle a:hover {
-    text-decoration: underline;
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 1.8rem 1.2rem;
+    }
 }
