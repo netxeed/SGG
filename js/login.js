@@ -1,6 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Segundo Incremento: Registro
+ * login.js — Segundo Incremento: registro
  *
  * Principios aplicados:
  *  - DRY: funciones reutilizables showAlert() y hideAlert()
