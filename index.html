@@ -29,37 +29,35 @@
                 <input type="text" id="username" required placeholder="Ej. admin" autocomplete="username">
             </div>
 
+            <!-- CORRECCIÓN: Se eliminó el bloque <div class="form-group"> duplicado que
+                 repetía el label "Contraseña" y el input #password sin el wrapper de fuerza.
+                 Se conserva únicamente este bloque unificado que incluye el medidor. -->
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
-            </div>
 
-        <div class="form-group">
-    <label for="password">Contraseña</label>
-    <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
-    
-    <div id="passwordStrengthWrapper" class="strength-wrapper" style="display: none;">
-        <div class="strength-bar-container">
-            <div id="strengthBar" class="strength-bar"></div>
-        </div>
-        <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
-        <ul class="password-requirements">
-            <li id="reqMin">❌ Una letra minúscula</li>
-            <li id="reqMaj">❌ Una letra mayúscula</li>
-            <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
-        </ul>
-    </div>
-</div>
+                <div id="passwordStrengthWrapper" class="strength-wrapper" style="display: none;">
+                    <div class="strength-bar-container">
+                        <div id="strengthBar" class="strength-bar"></div>
+                    </div>
+                    <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
+                    <ul class="password-requirements">
+                        <li id="reqMin">❌ Una letra minúscula</li>
+                        <li id="reqMaj">❌ Una letra mayúscula</li>
+                        <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
+                    </ul>
+                </div>
+            </div>
 
             <button type="submit" id="btnSubmit" class="btn-submit">Ingresar</button>
         </form>
-        
+
         <!-- Consulta Registro -->
         <div class="auth-toggle">
             <span id="toggleText">¿No tenés cuenta?</span>
             <a href="#" id="toggleFormLink">Registrate acá</a>
         </div>
-        
+
         <!-- Usuarios de prueba -->
         <div class="hint-box" aria-label="Usuarios de prueba disponibles">
             <p><strong>Usuarios de prueba:</strong></p>
