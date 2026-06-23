@@ -106,6 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const storageKey     = `user_${username.toLowerCase()}`;
         const storedPassword = localStorage.getItem(storageKey);
 
+        toggleFormLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            clearForm(authForm);
+            hideAlert(alertBox);
+    
+            // Resetear y ocultar la barra en Login, mostrar en Registro
+            passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
+            resetStrengthBar();
+
         if (isLoginMode) {
             if (!storedPassword) {
                 showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
