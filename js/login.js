@@ -139,9 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const storedPassword = localStorage.getItem(storageKey);
 
             if (storedPassword && storedPassword === password) {
-                localStorage.setItem('session_active', username);
+                // Bug fix #2: guardar username en minúsculas para que coincida
+                // con la clave user_${username} usada en cambio de contraseña.
+                const normalizedUsername = username.toLowerCase();
+                localStorage.setItem('session_active', normalizedUsername);
                 showAlert(alertBox, `¡Bienvenido, ${username}! Redirigiendo...`, 'success');
-                setTimeout(() => showDashboard(username), 1000);
+                setTimeout(() => showDashboard(normalizedUsername), 1000);
             } else if (!storedPassword) {
                 // --- CASO DE ERROR 2: usuario no registrado ---
                 showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
@@ -152,6 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else {
             // --- REGISTRO ---
+            // Bug fix #4: validar longitud mínima de usuario y contraseña.
+            if (username.length < 3) {
+                showAlert(alertBox, 'El nombre de usuario debe tener al menos 3 caracteres.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showAlert(alertBox, 'La contraseña debe tener al menos 6 caracteres.', 'error');
+                return;
+            }
+
             const userExists = localStorage.getItem(storageKey);
 
             if (userExists) {
@@ -228,10 +241,17 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLogout.addEventListener('click', () => {
         localStorage.removeItem('session_active');
         welcomeBlock.style.display   = 'none';
+        authCard.style.display       = 'block';
         authFormsBlock.style.display = 'block';
 
-        isLoginMode = false;
-        toggleFormLink.click();
+        // Bug fix #1: forzar modo login directamente sin usar toggleFormLink.click(),
+        // que dependía del estado previo y podía mostrar el form de registro por error.
+        isLoginMode = true;
+        formTitle.textContent      = 'Iniciar Sesión';
+        formSubtitle.textContent   = 'Introduce tus credenciales para acceder';
+        btnSubmit.textContent      = 'Ingresar';
+        toggleText.textContent     = '¿No tenés cuenta?';
+        toggleFormLink.textContent = 'Registrate acá';
 
         clearForm(authForm);
         clearForm(changePasswordForm);
@@ -266,6 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /** Muestra el dashboard como overlay de pantalla completa (fix CLS) */
     function showDashboard(username) {
         authFormsBlock.style.display = 'none';
+        // Bug fix #3: ocultar el authCard completo para que no se vea
+        // detrás del dashboard (position: fixed) al recargar con sesión activa.
+        authCard.style.display       = 'none';
         welcomeBlock.style.display   = 'block';
         displayUser.textContent      = username;
     }
