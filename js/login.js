@@ -47,8 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // MÓDULO 3: SELECTORES
     // ============================================
     const authForm       = document.getElementById('authForm');
-    const usernameInput   = document.getElementById('username');
-    const passwordInput   = document.getElementById('password');
+    const usernameInput  = document.getElementById('username');
+    const passwordInput  = document.getElementById('password');
+    const passwordStrengthWrapper = document.getElementById('passwordStrengthWrapper');
+    const strengthBar    = document.getElementById('strengthBar');
+    const strengthText   = document.getElementById('strengthText');
+    const reqMin         = document.getElementById('reqMin');
+    const reqMaj         = document.getElementById('reqMaj');
+    const reqSym         = document.getElementById('reqSym');
     const alertBox       = document.getElementById('alertBox');
     const btnSubmit      = document.getElementById('btnSubmit');
     const formTitle      = document.getElementById('formTitle');
