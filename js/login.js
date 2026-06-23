@@ -1,11 +1,11 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Lógica de validación, localStorage y switch de tema
+ * login.js — Segundo Incremento: Registro
  *
  * Principios aplicados:
- *  - DRY: funciones reutilizables showAlert(), hideAlert(), clearForm()
+ *  - DRY: funciones reutilizables showAlert() y hideAlert()
  *  - ETC: lógica separada del HTML, fácil de modificar
- *  - Ortogonalidad: el módulo de tema es independiente del módulo de auth
+ *  - Ortogonalidad: módulo de tema independiente del módulo de auth
  *  - WCAG: mensajes con role="alert", foco accesible en botones
  */
 
@@ -13,12 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // MÓDULO 1: USUARIOS PREDETERMINADOS
-    // Dos usuarios de prueba requeridos por la consigna
-    // Se cargan solo si no existen ya en localStorage
     // ============================================
     const DEFAULT_USERS = [
         { username: 'admin',   password: 'admin123' },
-        { username: 'santino', password: 'contrasena'  }
+        { username: 'santino', password: 'contrasena' }
     ];
 
     DEFAULT_USERS.forEach(({ username, password }) => {
@@ -28,15 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     // ============================================
     // MÓDULO 2: SWITCH DE TEMA (DÍA / NOCHE)
-    // Ortogonal: no depende del módulo de auth
     // ============================================
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
 
-    // Restaurar preferencia guardada
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
         themeIcon.textContent = '☀️';
@@ -48,51 +43,29 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-
     // ============================================
-    // MÓDULO 3: SELECTORES DE INTERFAZ
+    // MÓDULO 3: SELECTORES
     // ============================================
-
-    // Auth
-    const authCard       = document.getElementById('authCard');
-    const authForm       = document.getElementById('authForm');
-    const usernameInput  = document.getElementById('username');
-    const passwordInput  = document.getElementById('password');
-    const btnSubmit      = document.getElementById('btnSubmit');
-    const formTitle      = document.getElementById('formTitle');
-    const formSubtitle   = document.getElementById('formSubtitle');
-    const toggleFormLink = document.getElementById('toggleFormLink');
-    const toggleText     = document.getElementById('toggleText');
-    const alertBox       = document.getElementById('alertBox');
-    const authFormsBlock = document.getElementById('authFormsBlock');
-
-    // Dashboard
-    const welcomeBlock   = document.getElementById('welcomeBlock');
-    const displayUser    = document.getElementById('displayUser');
-    const btnLogout      = document.getElementById('btnLogout');
-    const moduleButtons  = document.querySelectorAll('.module-btn');
-    const statusMessage  = document.getElementById('statusMessage');
-
-    // Cambio de contraseña
-    const changePasswordForm  = document.getElementById('changePasswordForm');
-    const currentPasswordInput = document.getElementById('currentPassword');
-    const newPasswordInput    = document.getElementById('newPassword');
-    const alertBoxDashboard   = document.getElementById('alertBoxDashboard');
+    const authForm                = document.getElementById('authForm');
+    const usernameInput           = document.getElementById('username');
+    const passwordInput           = document.getElementById('password');
+    const passwordStrengthWrapper = document.getElementById('passwordStrengthWrapper');
+    const strengthBar             = document.getElementById('strengthBar');
+    const strengthText            = document.getElementById('strengthText');
+    const reqMin                  = document.getElementById('reqMin');
+    const reqMaj                  = document.getElementById('reqMaj');
+    const reqSym                  = document.getElementById('reqSym');
+    const alertBox                = document.getElementById('alertBox');
+    const btnSubmit               = document.getElementById('btnSubmit');
+    const formTitle               = document.getElementById('formTitle');
+    const formSubtitle            = document.getElementById('formSubtitle');
+    const toggleFormLink          = document.getElementById('toggleFormLink');
+    const toggleText              = document.getElementById('toggleText');
 
     let isLoginMode = true;
 
-
     // ============================================
-    // MÓDULO 4: SESIÓN PERSISTIDA
-    // ============================================
-    const activeSession = localStorage.getItem('session_active');
-    if (activeSession) {
-        showDashboard(activeSession);
-    }
-
-
-    // ============================================
-    // MÓDULO 5: ALTERNAR LOGIN / REGISTRO
+    // MÓDULO 4: ALTERNAR LOGIN / REGISTRO
     // ============================================
     toggleFormLink.addEventListener('click', (e) => {
         e.preventDefault();
@@ -100,24 +73,27 @@ document.addEventListener('DOMContentLoaded', () => {
         clearForm(authForm);
         hideAlert(alertBox);
 
+        // Mostrar/ocultar medidor de seguridad según el modo
+        passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
+        resetStrengthBar();
+
         if (isLoginMode) {
-            formTitle.textContent    = 'Iniciar Sesión';
-            formSubtitle.textContent = 'Introduce tus credenciales para acceder';
-            btnSubmit.textContent    = 'Ingresar';
-            toggleText.textContent   = '¿No tenés cuenta?';
+            formTitle.textContent      = 'Iniciar Sesión';
+            formSubtitle.textContent   = 'Introduce tus credenciales para acceder';
+            btnSubmit.textContent      = 'Ingresar';
+            toggleText.textContent     = '¿No tenés cuenta?';
             toggleFormLink.textContent = 'Registrate acá';
         } else {
-            formTitle.textContent    = 'Crear Cuenta';
-            formSubtitle.textContent = 'Elegí un usuario y contraseña para registrarte';
-            btnSubmit.textContent    = 'Registrarse';
-            toggleText.textContent   = '¿Ya tenés cuenta?';
+            formTitle.textContent      = 'Crear Cuenta';
+            formSubtitle.textContent   = 'Elegí un usuario y contraseña para registrarte';
+            btnSubmit.textContent      = 'Registrarse';
+            toggleText.textContent     = '¿Ya tenés cuenta?';
             toggleFormLink.textContent = 'Iniciá sesión';
         }
     });
 
-
     // ============================================
-    // MÓDULO 6: LOGIN Y REGISTRO
+    // MÓDULO 5: LÓGICA DE LOGIN / REGISTRO
     // ============================================
     authForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -126,171 +102,59 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Validación: campos vacíos
         if (!username || !password) {
             showAlert(alertBox, 'Por favor, completá todos los campos.', 'error');
             return;
         }
 
-        const storageKey = `user_${username.toLowerCase()}`;
+        const storageKey     = `user_${username.toLowerCase()}`;
+        const storedPassword = localStorage.getItem(storageKey);
 
         if (isLoginMode) {
-            // --- CASO DE ÉXITO: credenciales válidas ---
-            const storedPassword = localStorage.getItem(storageKey);
-
-            if (storedPassword && storedPassword === password) {
-                // Bug fix #2: guardar username en minúsculas para que coincida
-                // con la clave user_${username} usada en cambio de contraseña.
-                const normalizedUsername = username.toLowerCase();
-                localStorage.setItem('session_active', normalizedUsername);
-                showAlert(alertBox, `¡Bienvenido, ${username}! Redirigiendo...`, 'success');
-                setTimeout(() => showDashboard(normalizedUsername), 1000);
-            } else if (!storedPassword) {
-                // --- CASO DE ERROR 2: usuario no registrado ---
+            if (!storedPassword) {
                 showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
-            } else {
-                // --- CASO DE ERROR 1: contraseña incorrecta ---
+            } else if (storedPassword !== password) {
                 showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
+            } else {
+                showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
+                clearForm(authForm);
             }
-
         } else {
-            // --- REGISTRO ---
-            // Bug fix #4: validar longitud mínima de usuario y contraseña.
-            if (username.length < 3) {
-                showAlert(alertBox, 'El nombre de usuario debe tener al menos 3 caracteres.', 'error');
-                return;
-            }
-            if (password.length < 6) {
-                showAlert(alertBox, 'La contraseña debe tener al menos 6 caracteres.', 'error');
-                return;
-            }
-
-            const userExists = localStorage.getItem(storageKey);
-
-            if (userExists) {
+            if (storedPassword) {
                 showAlert(alertBox, 'El nombre de usuario ya está registrado.', 'error');
             } else {
                 localStorage.setItem(storageKey, password);
                 showAlert(alertBox, '¡Registro exitoso! Ya podés iniciar sesión.', 'success');
-                setTimeout(() => toggleFormLink.click(), 1500);
+                clearForm(authForm);
+                setTimeout(() => toggleFormLink.click(), 1200);
             }
         }
     });
 
-
-    // ============================================
-    // MÓDULO 7: MÓDULOS DEL DASHBOARD
-    // ============================================
-    moduleButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const moduloId = e.currentTarget.getAttribute('data-modulo');
-            const nombres  = ['Ingresos', 'Gastos', 'Reportes', 'Categorías', 'Presupuesto', 'Configuración'];
-            const nombre   = nombres[moduloId - 1] || `Módulo ${moduloId}`;
-
-            statusMessage.textContent = `${nombre}: funcionalidad en desarrollo — próximo incremento`;
-            statusMessage.style.display = 'block';
-
-            // Reiniciar animación
-            statusMessage.style.animation = 'none';
-            statusMessage.offsetHeight;
-            statusMessage.style.animation = 'fadeIn 0.4s ease forwards';
-        });
-    });
-
-
-    // ============================================
-    // MÓDULO 8: CAMBIO DE CONTRASEÑA
-    // ============================================
-    changePasswordForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        hideAlert(alertBoxDashboard);
-
-        const currentUser = localStorage.getItem('session_active');
-        if (!currentUser) {
-            showAlert(alertBoxDashboard, 'Sesión inválida. Cerrando sesión...', 'error');
-            setTimeout(() => btnLogout.click(), 1500);
-            return;
-        }
-
-        const currentPassword = currentPasswordInput.value.trim();
-        const newPassword     = newPasswordInput.value.trim();
-
-        if (!currentPassword || !newPassword) {
-            showAlert(alertBoxDashboard, 'Por favor, completá todos los campos.', 'error');
-            return;
-        }
-
-        const storageKey     = `user_${currentUser.toLowerCase()}`;
-        const storedPassword = localStorage.getItem(storageKey);
-
-        if (storedPassword !== currentPassword) {
-            showAlert(alertBoxDashboard, 'La contraseña actual es incorrecta.', 'error');
-        } else if (currentPassword === newPassword) {
-            showAlert(alertBoxDashboard, 'La nueva contraseña no puede ser igual a la actual.', 'error');
-        } else {
-            localStorage.setItem(storageKey, newPassword);
-            showAlert(alertBoxDashboard, '¡Contraseña actualizada con éxito!', 'success');
-            clearForm(changePasswordForm);
-        }
-    });
-
-
-    // ============================================
-    // MÓDULO 9: CIERRE DE SESIÓN
-    // ============================================
-    btnLogout.addEventListener('click', () => {
-        localStorage.removeItem('session_active');
-        welcomeBlock.style.display   = 'none';
-        authCard.style.display       = 'block';
-        authFormsBlock.style.display = 'block';
-
-        // Bug fix #1: forzar modo login directamente sin usar toggleFormLink.click(),
-        // que dependía del estado previo y podía mostrar el form de registro por error.
-        isLoginMode = true;
-        formTitle.textContent      = 'Iniciar Sesión';
-        formSubtitle.textContent   = 'Introduce tus credenciales para acceder';
-        btnSubmit.textContent      = 'Ingresar';
-        toggleText.textContent     = '¿No tenés cuenta?';
-        toggleFormLink.textContent = 'Registrate acá';
-
-        clearForm(authForm);
-        clearForm(changePasswordForm);
-        hideAlert(alertBox);
-        hideAlert(alertBoxDashboard);
-        statusMessage.style.display = 'none';
-    });
-
-
     // ============================================
     // FUNCIONES AUXILIARES (DRY)
-    // Reutilizadas en múltiples módulos
     // ============================================
-
-    /** Muestra un mensaje de alerta accesible */
     function showAlert(element, message, type) {
         element.textContent = message;
         element.className   = `alert-message ${type}`;
     }
 
-    /** Oculta y limpia un mensaje de alerta */
     function hideAlert(element) {
         element.textContent = '';
         element.className   = 'alert-message';
     }
 
-    /** Limpia todos los campos de un formulario */
     function clearForm(formElement) {
         formElement.reset();
     }
 
-    /** Muestra el dashboard como overlay de pantalla completa (fix CLS) */
-    function showDashboard(username) {
-        authFormsBlock.style.display = 'none';
-        // Bug fix #3: ocultar el authCard completo para que no se vea
-        // detrás del dashboard (position: fixed) al recargar con sesión activa.
-        authCard.style.display       = 'none';
-        welcomeBlock.style.display   = 'block';
-        displayUser.textContent      = username;
+    function resetStrengthBar() {
+        if (strengthBar)  strengthBar.style.width           = '0%';
+        if (strengthBar)  strengthBar.style.backgroundColor = '';
+        if (strengthText) strengthText.textContent          = 'Seguridad: Insegura';
+        if (reqMin) reqMin.textContent = '❌ Una letra minúscula';
+        if (reqMaj) reqMaj.textContent = '❌ Una letra mayúscula';
+        if (reqSym) reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
     }
 
 });
