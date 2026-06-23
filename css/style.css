@@ -1,7 +1,7 @@
 cat > /mnt/user-data/outputs/css/style.css << 'CSSEOF'
 /* ============================================
    SGG - Sistema de Gestión de Gastos
-   style.css — Tercer Incremento: UI mejorada
+   style.css — Segundo Incremento
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
