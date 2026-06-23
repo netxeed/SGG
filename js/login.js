@@ -46,21 +46,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // MÓDULO 3: SELECTORES
     // ============================================
-    const authForm       = document.getElementById('authForm');
-    const usernameInput  = document.getElementById('username');
-    const passwordInput  = document.getElementById('password');
+    const authForm                = document.getElementById('authForm');
+    const usernameInput           = document.getElementById('username');
+    const passwordInput           = document.getElementById('password');
     const passwordStrengthWrapper = document.getElementById('passwordStrengthWrapper');
-    const strengthBar    = document.getElementById('strengthBar');
-    const strengthText   = document.getElementById('strengthText');
-    const reqMin         = document.getElementById('reqMin');
-    const reqMaj         = document.getElementById('reqMaj');
-    const reqSym         = document.getElementById('reqSym');
-    const alertBox       = document.getElementById('alertBox');
-    const btnSubmit      = document.getElementById('btnSubmit');
-    const formTitle      = document.getElementById('formTitle');
-    const formSubtitle   = document.getElementById('formSubtitle');
-    const toggleFormLink = document.getElementById('toggleFormLink');
-    const toggleText     = document.getElementById('toggleText');
+    const strengthBar             = document.getElementById('strengthBar');
+    const strengthText            = document.getElementById('strengthText');
+    const reqMin                  = document.getElementById('reqMin');
+    const reqMaj                  = document.getElementById('reqMaj');
+    const reqSym                  = document.getElementById('reqSym');
+    const alertBox                = document.getElementById('alertBox');
+    const btnSubmit               = document.getElementById('btnSubmit');
+    const formTitle               = document.getElementById('formTitle');
+    const formSubtitle            = document.getElementById('formSubtitle');
+    const toggleFormLink          = document.getElementById('toggleFormLink');
+    const toggleText              = document.getElementById('toggleText');
 
     let isLoginMode = true;
 
@@ -72,6 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
         isLoginMode = !isLoginMode;
         clearForm(authForm);
         hideAlert(alertBox);
+
+        // Mostrar/ocultar medidor de seguridad según el modo
+        passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
+        resetStrengthBar();
 
         if (isLoginMode) {
             formTitle.textContent      = 'Iniciar Sesión';
@@ -105,16 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const storageKey     = `user_${username.toLowerCase()}`;
         const storedPassword = localStorage.getItem(storageKey);
-
-        toggleFormLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            isLoginMode = !isLoginMode;
-            clearForm(authForm);
-            hideAlert(alertBox);
-    
-            // Resetear y ocultar la barra en Login, mostrar en Registro
-            passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
-            resetStrengthBar();
 
         if (isLoginMode) {
             if (!storedPassword) {
@@ -153,4 +147,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearForm(formElement) {
         formElement.reset();
     }
+
+    function resetStrengthBar() {
+        if (strengthBar)  strengthBar.style.width           = '0%';
+        if (strengthBar)  strengthBar.style.backgroundColor = '';
+        if (strengthText) strengthText.textContent          = 'Seguridad: Insegura';
+        if (reqMin) reqMin.textContent = '❌ Una letra minúscula';
+        if (reqMaj) reqMaj.textContent = '❌ Una letra mayúscula';
+        if (reqSym) reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
+    }
+
 });
