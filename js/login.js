@@ -91,7 +91,68 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleFormLink.textContent = 'Iniciá sesión';
         }
     });
+    
+    // ============================================
+    // MÓDULO 4.5: EVALUACIÓN DE CONTRASEÑA EN TIEMPO REAL
+    // ============================================
+    passwordInput.addEventListener('input', (e) => {
+        if (isLoginMode) return; // Solo evaluar si está creando cuenta
 
+        const password = e.target.value;
+        let strength = 0;
+
+        // Comprobaciones usando Expresiones Regulares
+        const hasMin = /[a-z]/.test(password);
+        const hasMaj = /[A-Z]/.test(password);
+        const hasSym = /[^a-zA-Z0-9]/.test(password);
+
+        // Actualizar los checkmarks visuales
+        reqMin.textContent = hasMin ? '✅ Una letra minúscula' : '❌ Una letra minúscula';
+        reqMin.classList.toggle('met', hasMin);
+
+        reqMaj.textContent = hasMaj ? '✅ Una letra mayúscula' : '❌ Una letra mayúscula';
+        reqMaj.classList.toggle('met', hasMaj);
+
+        reqSym.textContent = hasSym ? '✅ Un símbolo (ej. !@#$%^&*)' : '❌ Un símbolo (ej. !@#$%^&*)';
+        reqSym.classList.toggle('met', hasSym);
+
+        // Calcular puntaje total de fortaleza (de 0 a 4)
+        if (password.length >= 6) strength++;
+        if (hasMin) strength++;
+        if (hasMaj) strength++;
+        if (hasSym) strength++;
+
+        // Reiniciar las clases CSS dinámicas antes de aplicar nuevas
+        strengthBar.className = 'strength-bar';
+        strengthText.className = 'strength-text';
+
+        // Actualizar el ancho y color de la barra según el puntaje
+        if (password.length === 0) {
+            strengthBar.style.width = '0%';
+            strengthText.textContent = 'Seguridad: Insegura';
+        } else if (strength <= 1) {
+            strengthBar.style.width = '25%';
+            strengthBar.classList.add('level-1');
+            strengthText.textContent = 'Seguridad: Débil';
+            strengthText.classList.add('level-1');
+        } else if (strength === 2) {
+            strengthBar.style.width = '50%';
+            strengthBar.classList.add('level-2');
+            strengthText.textContent = 'Seguridad: Regular';
+            strengthText.classList.add('level-2');
+        } else if (strength === 3) {
+            strengthBar.style.width = '75%';
+            strengthBar.classList.add('level-3');
+            strengthText.textContent = 'Seguridad: Buena';
+            strengthText.classList.add('level-3');
+        } else {
+            strengthBar.style.width = '100%';
+            strengthBar.classList.add('level-4');
+            strengthText.textContent = 'Seguridad: Fuerte';
+            strengthText.classList.add('level-4');
+        }
+    });
+    
     // ============================================
     // MÓDULO 5: LÓGICA DE LOGIN / REGISTRO
     // ============================================
