@@ -180,9 +180,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
                 clearForm(authForm);
             }
-        } else {
+        } } else {
+            // Validar que se cumplan las reglas de seguridad
+            const isSecure = /[a-z]/.test(password) && 
+                             /[A-Z]/.test(password) && 
+                             /[^a-zA-Z0-9]/.test(password) &&
+                             password.length >= 6;
+
             if (storedPassword) {
                 showAlert(alertBox, 'El nombre de usuario ya está registrado.', 'error');
+            } else if (!isSecure) {
+                showAlert(alertBox, 'La contraseña no cumple con los requisitos de seguridad.', 'error');
             } else {
                 localStorage.setItem(storageKey, password);
                 showAlert(alertBox, '¡Registro exitoso! Ya podés iniciar sesión.', 'success');
