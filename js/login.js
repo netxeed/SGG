@@ -218,12 +218,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetStrengthBar() {
-        if (strengthBar)  strengthBar.style.width           = '0%';
-        if (strengthBar)  strengthBar.style.backgroundColor = '';
-        if (strengthText) strengthText.textContent          = 'Seguridad: Insegura';
-        if (reqMin) reqMin.textContent = '❌ Una letra minúscula';
-        if (reqMaj) reqMaj.textContent = '❌ Una letra mayúscula';
-        if (reqSym) reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
+        if (strengthBar) {
+            strengthBar.style.width = '0%';
+            strengthBar.className = 'strength-bar'; // Limpia colores previos (level-1, etc.)
+        }
+        if (strengthText) {
+            strengthText.textContent = 'Seguridad: Insegura';
+            strengthText.className = 'strength-text';
+        }
+        if (reqMin) {
+            reqMin.textContent = '❌ Una letra minúscula';
+            reqMin.classList.remove('met'); // Quita el color verde
+        }
+        if (reqMaj) {
+            reqMaj.textContent = '❌ Una letra mayúscula';
+            reqMaj.classList.remove('met');
+        }
+        if (reqSym) {
+            reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
+            reqSym.classList.remove('met');
+        }
     }
 
 });
