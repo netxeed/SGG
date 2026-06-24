@@ -1,12 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Segundo Incremento: registro
- *
- * Principios aplicados:
- *  - DRY: funciones reutilizables showAlert() y hideAlert()
- *  - ETC: lógica separada del HTML, fácil de modificar
- *  - Ortogonalidad: módulo de tema independiente del módulo de auth
- *  - WCAG: mensajes con role="alert", foco accesible en botones
+ * login.js — Segundo Incremento
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearForm(authForm);
         hideAlert(alertBox);
 
-        // Mostrar/ocultar medidor de seguridad según el modo
         passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
         resetStrengthBar();
 
@@ -96,17 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // MÓDULO 4.5: EVALUACIÓN DE CONTRASEÑA EN TIEMPO REAL
     // ============================================
     passwordInput.addEventListener('input', (e) => {
-        if (isLoginMode) return; // Solo evaluar si está creando cuenta
+        if (isLoginMode) return; 
 
         const password = e.target.value;
         let strength = 0;
 
-        // Comprobaciones usando Expresiones Regulares
         const hasMin = /[a-z]/.test(password);
         const hasMaj = /[A-Z]/.test(password);
         const hasSym = /[^a-zA-Z0-9]/.test(password);
 
-        // Actualizar los checkmarks visuales
         reqMin.textContent = hasMin ? '✅ Una letra minúscula' : '❌ Una letra minúscula';
         reqMin.classList.toggle('met', hasMin);
 
@@ -116,17 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         reqSym.textContent = hasSym ? '✅ Un símbolo (ej. !@#$%^&*)' : '❌ Un símbolo (ej. !@#$%^&*)';
         reqSym.classList.toggle('met', hasSym);
 
-        // Calcular puntaje total de fortaleza (de 0 a 4)
         if (password.length >= 6) strength++;
         if (hasMin) strength++;
         if (hasMaj) strength++;
         if (hasSym) strength++;
 
-        // Reiniciar las clases CSS dinámicas antes de aplicar nuevas
         strengthBar.className = 'strength-bar';
         strengthText.className = 'strength-text';
 
-        // Actualizar el ancho y color de la barra según el puntaje
         if (password.length === 0) {
             strengthBar.style.width = '0%';
             strengthText.textContent = 'Seguridad: Insegura';
@@ -180,8 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
                 clearForm(authForm);
             }
-        } } else {
-            // Validar que se cumplan las reglas de seguridad
+        } else {
             const isSecure = /[a-z]/.test(password) && 
                              /[A-Z]/.test(password) && 
                              /[^a-zA-Z0-9]/.test(password) &&
@@ -220,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetStrengthBar() {
         if (strengthBar) {
             strengthBar.style.width = '0%';
-            strengthBar.className = 'strength-bar'; // Limpia colores previos (level-1, etc.)
+            strengthBar.className = 'strength-bar';
         }
         if (strengthText) {
             strengthText.textContent = 'Seguridad: Insegura';
@@ -228,14 +215,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (reqMin) {
             reqMin.textContent = '❌ Una letra minúscula';
-            reqMin.classList.remove('met'); // Quita el color verde
+            reqMin.classList.remove('met');
         }
         if (reqMaj) {
             reqMaj.textContent = '❌ Una letra mayúscula';
             reqMaj.classList.remove('met');
         }
         if (reqSym) {
-            reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
+            reqSym.textContent = '❌ Un símbolo (ej. !@#$%^*)';
             reqSym.classList.remove('met');
         }
     }
