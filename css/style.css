@@ -1,7 +1,6 @@
-cat > /mnt/user-data/outputs/css/style.css << 'CSSEOF'
 /* ============================================
    SGG - Sistema de Gestión de Gastos
-   style.css — Segundo Incremento: registro
+   style.css — Segundo Incremento
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -105,7 +104,6 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
     border: 1.5px solid var(--card-border);
-    /* Acento superior: línea de color característica del sistema */
     border-top: 4px solid var(--primary-color);
     width: 100%;
     max-width: 420px;
@@ -163,28 +161,11 @@ body {
     transition: color 0.4s ease;
 }
 
-/* Wrapper para ícono dentro del input */
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon {
-    position: absolute;
-    left: 0.9rem;
-    color: var(--text-muted);
-    font-size: 1rem;
-    pointer-events: none;
-    transition: color 0.3s ease;
-    user-select: none;
-}
-
 .form-group input {
     background-color: var(--input-bg);
     border: 1.5px solid var(--input-border);
     border-radius: var(--radius);
-    padding: 0.82rem 1rem 0.82rem 2.6rem;
+    padding: 0.82rem 1rem;
     font-size: 0.97rem;
     font-family: inherit;
     color: var(--text-main);
@@ -229,7 +210,6 @@ body.dark-mode .form-group input:focus {
                 background-color 0.35s ease;
 }
 
-/* Niveles de color de la barra */
 .strength-bar.level-1 { background-color: #e8304a; }
 .strength-bar.level-2 { background-color: #f59e0b; }
 .strength-bar.level-3 { background-color: #3b82f6; }
@@ -253,7 +233,6 @@ body.dark-mode .strength-text.level-2 { color: #fbbf24; }
 body.dark-mode .strength-text.level-3 { color: #60a5fa; }
 body.dark-mode .strength-text.level-4 { color: #34d374; }
 
-/* Requisitos */
 .password-requirements {
     list-style: none;
     margin-top: 0.5rem;
