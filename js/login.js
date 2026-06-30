@@ -1,8 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Tercer Incremento
- *
- * Depende de usuarios.js (debe cargarse antes en el HTML).
+ * login.js — Segundo Incremento
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,12 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☼';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☼' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -36,9 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubmit     = document.getElementById('btnSubmit');
 
     // ============================================
-    // MÓDULO: BLOQUEO POR INTENTOS FALLIDOS (GLOBAL)
-    // 3 intentos fallidos consecutivos -> botón
-    // bloqueado 30 segundos.
+    // MÓDULO: BLOQUEO POR INTENTOS FALLIDOS
     // ============================================
     const MAX_INTENTOS    = 3;
     const TIEMPO_BLOQUEO  = 30; // segundos
@@ -88,7 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
         } else {
             intentosFallidos = 0;
-            showAlert(alertBox, `¡Bienvenido, ${usuario.nombre || usuario.username}!`, 'success');
+            // Saludo usando exclusivamente el nombre real
+            showAlert(alertBox, `¡Bienvenido, ${usuario.nombre}!`, 'success');
+            
+            // Dashboard compacto: se almacena la sesión y se redirige a recuperar contraseña
+            sessionStorage.setItem('sesionActivaSGG', usuario.username);
+            setTimeout(() => {
+                window.location.href = 'recuperar.html';
+            }, 1000);
+            
             clearForm(authForm);
         }
     });
@@ -101,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // FUNCIONES AUXILIARES (DRY)
+    // FUNCIONES AUXILIARES
     // ============================================
     function showAlert(element, message, type) {
         element.textContent = message;
