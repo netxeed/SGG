@@ -1,0 +1,5 @@
+reemplazar emojis por simbolos unicode
+corregir discrepancia de uso de username y nombre real en las paginas, usar siempre nombre real
+eliminar texto SGG azul
+dashboard de sesion iniciada con unica opcion cambiar contrasena
+eliminar "hola usuario" en pagina de recuperacion de contrasena para poder utilizar recuperacion.html en el cambio de contrasena
