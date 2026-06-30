@@ -1,13 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
  * recuperar.js
- *
- * Depende de usuarios.js (debe cargarse antes en el HTML).
- *
- * Flujo en dos pasos:
- *  1) Verificar identidad: usuario + fecha de nacimiento.
- *  2) Si coincide, mostrar formulario de nueva contraseña
- *     (debe ser distinta a la guardada) + repetir.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,12 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☼';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☼' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -59,13 +52,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertBox     = document.getElementById('alertBox');
     const btnSubmit    = document.getElementById('btnSubmit');
 
-    let usuarioVerificado = null; // referencia al usuario una vez confirmada su identidad
+    let usuarioVerificado = null; 
 
     const estado = {
         passwordSegura: false,
         passwordsCoinciden: false,
         passwordDistinta: false
     };
+
+    // ============================================
+    // INICIO RÁPIDO PARA DASHBOARD COMPACTO
+    // ============================================
+    const sesionActiva = sessionStorage.getItem('sesionActivaSGG');
+    if (sesionActiva) {
+        const usuario = buscarUsuario(sesionActiva);
+        if (usuario) {
+            usuarioVerificado = usuario;
+            verificarForm.style.display = 'none';
+            resetForm.style.display = 'flex';
+            formTitle.textContent = 'Cambiar Contraseña';
+            formSubtitle.textContent = 'Elegí tu nueva contraseña'; // Saludo genérico según requerimiento
+            sessionStorage.removeItem('sesionActivaSGG'); // Consumimos la sesión
+        }
+    }
 
     // ============================================
     // PASO 1: VERIFICACIÓN DE IDENTIDAD
@@ -95,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         verificarForm.style.display = 'none';
         resetForm.style.display = 'flex';
         formTitle.textContent = 'Nueva Contraseña';
-        formSubtitle.textContent = `Hola ${usuario.nombre || usuario.username}, elegí tu nueva contraseña`;
+        formSubtitle.textContent = 'Elegí tu nueva contraseña';
     });
 
     // ============================================
@@ -144,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         estado.passwordSegura = checks.esValida;
 
-        // Comparación contra la contraseña actual guardada
         if (usuarioVerificado && password.length > 0) {
             const esIgual = password === usuarioVerificado.password;
             estado.passwordDistinta = !esIgual;
@@ -161,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✅ ' : '❌ ') + texto;
+        elemento.textContent = (cumplido ? '✅ ' : '✖️ ') + texto;
         elemento.classList.toggle('met', cumplido);
     }
 
@@ -237,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // FUNCIONES AUXILIARES (DRY)
+    // FUNCIONES AUXILIARES
     // ============================================
     function showAlert(element, message, type) {
         element.textContent = message;
