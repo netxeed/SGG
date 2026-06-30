@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Recuperá el acceso a tu cuenta.">
+    <title>SGG - Recuperar Contraseña</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <h1>SGG</h1>
+            <h2 id="formTitle">Recuperar Contraseña</h2>
+            <p id="formSubtitle">Verificá tu identidad para continuar</p>
+        </div>
+
+        <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
+
+        <!-- PASO 1: Verificación de identidad -->
+        <form id="verificarForm" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" required placeholder="Ej. admin" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimiento" required autocomplete="bday">
+                <span class="input-hint">Usá la misma fecha que ingresaste al registrarte.</span>
+            </div>
+
+            <button type="submit" id="btnVerificar" class="btn-submit">Verificar identidad</button>
+        </form>
+
+        <!-- PASO 2: Nueva contraseña (oculto hasta verificar) -->
+        <form id="resetForm" class="auth-form" novalidate style="display: none;">
+            <div class="form-group">
+                <label for="passwordNueva">Nueva Contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="passwordNueva" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <div id="passwordStrengthWrapper" class="strength-wrapper">
+                    <div class="strength-bar-container">
+                        <div id="strengthBar" class="strength-bar"></div>
+                    </div>
+                    <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
+                    <ul class="password-requirements">
+                        <li id="reqLen">❌ Mínimo 8 caracteres</li>
+                        <li id="reqMin">❌ Una letra minúscula</li>
+                        <li id="reqMaj">❌ Una letra mayúscula</li>
+                        <li id="reqNum">❌ Un número</li>
+                        <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
+                    </ul>
+                </div>
+                <span class="field-error" id="errorPasswordIgual"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="passwordRepeat">Repetir Nueva Contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="passwordRepeat" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+                <span class="field-error" id="errorPasswordRepeat"></span>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-submit" disabled>Cambiar Contraseña</button>
+        </form>
+
+        <div class="auth-links">
+            <a href="index.html">Volver a iniciar sesión</a>
+        </div>
+
+    </div>
+
+    <script src="js/usuarios.js"></script>
+    <script src="js/password-toggle.js"></script>
+    <script src="js/recuperar.js"></script>
+</body>
+</html>

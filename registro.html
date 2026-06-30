@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Creá tu cuenta para empezar a administrar tus finanzas.">
+    <title>SGG - Crear Cuenta</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <h1>SGG</h1>
+            <h2>Crear Cuenta</h2>
+            <p>Completá tus datos para registrarte</p>
+        </div>
+
+        <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
+
+        <form id="registroForm" class="auth-form" novalidate>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre/s</label>
+                    <input type="text" id="nombre" required placeholder="Ej. Juan" autocomplete="given-name">
+                    <span class="field-error" id="errorNombre"></span>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido/s</label>
+                    <input type="text" id="apellido" required placeholder="Ej. Pérez" autocomplete="family-name">
+                    <span class="field-error" id="errorApellido"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimiento" required autocomplete="bday">
+                <span class="field-error" id="errorFecha"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" required placeholder="Ej. juanperez" autocomplete="username">
+                <span class="field-error" id="errorUsername"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="password" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <div id="passwordStrengthWrapper" class="strength-wrapper">
+                    <div class="strength-bar-container">
+                        <div id="strengthBar" class="strength-bar"></div>
+                    </div>
+                    <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
+                    <ul class="password-requirements">
+                        <li id="reqLen">❌ Mínimo 8 caracteres</li>
+                        <li id="reqMin">❌ Una letra minúscula</li>
+                        <li id="reqMaj">❌ Una letra mayúscula</li>
+                        <li id="reqNum">❌ Un número</li>
+                        <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="passwordRepeat">Repetir Contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="passwordRepeat" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+                <span class="field-error" id="errorPasswordRepeat"></span>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-submit" disabled>Registrarse</button>
+        </form>
+
+        <div class="auth-links">
+            <a href="index.html">Ya tengo cuenta, iniciar sesión</a>
+        </div>
+
+    </div>
+
+    <script src="js/usuarios.js"></script>
+    <script src="js/password-toggle.js"></script>
+    <script src="js/registro.js"></script>
+</body>
+</html>
