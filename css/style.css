@@ -117,15 +117,6 @@ body {
     margin-bottom: 2rem;
 }
 
-.auth-header h1 {
-    color: var(--primary-color);
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: 5px;
-    margin-bottom: 0.6rem;
-    transition: color 0.4s ease;
-}
-
 .auth-header h2 {
     color: var(--text-main);
     font-size: 1.3rem;
@@ -394,26 +385,31 @@ body.dark-mode .alert-message.success {
 }
 
 .password-field input {
-    padding-right: 2.8rem;
+    padding-right: 5.2rem;
 }
 
 .toggle-password {
     position: absolute;
-    right: 0.2rem;
+    right: 0.3rem;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    font-size: 1.05rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
     cursor: pointer;
-    padding: 0.5rem 0.7rem;
+    padding: 0.4rem 0.6rem;
     line-height: 1;
     border-radius: 8px;
+    color: var(--text-link);
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .toggle-password:hover {
     background-color: var(--input-bg);
+    text-decoration: underline;
 }
 
 .toggle-password:focus {
