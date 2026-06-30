@@ -3,7 +3,9 @@
  * usuarios.js — Módulo compartido (Login, Registro, Recuperar)
  *
  * Centraliza el acceso al array de usuarios guardado en localStorage
- * bajo la clave 'usuarios_sgg'.
+ * bajo la clave 'usuarios_sgg'. Todos los scripts de la carpeta js/
+ * deben usar estas funciones en lugar de tocar localStorage directamente,
+ * para evitar inconsistencias entre páginas.
  */
 
 const SGG_STORAGE_KEY = 'usuarios_sgg';
@@ -158,4 +160,30 @@ function calcularEdad(fechaNacimientoStr) {
     }
 
     return edad;
+}
+
+/* ============================================
+   SESIÓN ACTIVA
+   Se guarda en sessionStorage (se borra al cerrar
+   la pestaña/navegador) para distinguir un login
+   válido del simple hecho de tener el array de
+   usuarios en localStorage.
+   ============================================ */
+const SGG_SESSION_KEY = 'sesion_sgg';
+
+function iniciarSesion(username) {
+    sessionStorage.setItem(SGG_SESSION_KEY, JSON.stringify({ username }));
+}
+
+function obtenerSesion() {
+    try {
+        const data = JSON.parse(sessionStorage.getItem(SGG_SESSION_KEY));
+        return (data && data.username) ? data : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function cerrarSesion() {
+    sessionStorage.removeItem(SGG_SESSION_KEY);
 }
