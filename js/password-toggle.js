@@ -1,10 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * password-toggle.js — Módulo compartido (Login, Registro, Recuperar)
- *
- * Agrega el botón de "ojito" a todo input type="password" que esté
- * envuelto en un contenedor con clase .password-field, y alterna
- * entre texto oculto (puntos) y visible.
+ * password-toggle.js
  */
 
 function inicializarTogglesPassword() {
@@ -19,12 +15,12 @@ function inicializarTogglesPassword() {
         btn.className = 'toggle-password';
         btn.setAttribute('aria-label', 'Mostrar contraseña');
         btn.setAttribute('tabindex', '-1');
-        btn.textContent = '👁️';
+        btn.textContent = '⚆';
 
         btn.addEventListener('click', () => {
             const oculta = input.type === 'password';
             input.type = oculta ? 'text' : 'password';
-            btn.textContent = oculta ? '🙈' : '👁️';
+            btn.textContent = oculta ? '⚈' : '⚆';
             btn.setAttribute('aria-label', oculta ? 'Ocultar contraseña' : 'Mostrar contraseña');
         });
 
