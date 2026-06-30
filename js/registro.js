@@ -1,8 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
  * registro.js
- *
- * Depende de usuarios.js (debe cargarse antes en el HTML).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,12 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☼';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☼' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -56,19 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const EDAD_MINIMA = 14;
 
-    // Estado de validez de cada bloque del formulario
     const estado = {
         nombre: false,
         apellido: false,
         fecha: false,
-        username: true,   // se valida recién al intentar enviar (duplicado)
+        username: true,
         passwordSegura: false,
         passwordsCoinciden: false
     };
 
     // ============================================
     // VALIDACIÓN: NOMBRE / APELLIDO
-    // Trim + solo letras (sin números ni símbolos)
     // ============================================
     function validarNombreApellido(input, errorEl, campo) {
         const valor = input.value.trim();
@@ -103,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     apellidoInput.addEventListener('input', () => validarNombreApellido(apellidoInput, errorApellido, 'apellido'));
 
     // ============================================
-    // VALIDACIÓN: FECHA DE NACIMIENTO (edad >= 14)
+    // VALIDACIÓN: FECHA DE NACIMIENTO
     // ============================================
     function validarFecha() {
         const valor = fechaInput.value;
@@ -141,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fechaInput.addEventListener('change', validarFecha);
 
     // ============================================
-    // VALIDACIÓN: USUARIO (duplicados)
+    // VALIDACIÓN: USUARIO
     // ============================================
     function validarUsername() {
         const valor = usernameInput.value.trim();
@@ -157,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         usernameInput.classList.toggle('input-invalid', !esValido && usernameInput.dataset.tocado === '1' && valor.length > 0);
         errorUsername.textContent = (!esValido && usernameInput.dataset.tocado === '1' && valor.length > 0) ? mensaje : '';
-        estado.username = esValido || valor.length === 0; // no bloquea el botón hasta que escriba algo inválido
+        estado.username = esValido || valor.length === 0; 
         actualizarBotonSubmit();
         return esValido;
     }
@@ -218,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✅ ' : '❌ ') + texto;
+        elemento.textContent = (cumplido ? '✅ ' : '✖️ ') + texto;
         elemento.classList.toggle('met', cumplido);
     }
 
@@ -251,9 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // HABILITAR / DESHABILITAR BOTÓN SUBMIT
-    // Se requiere: nombre, apellido, fecha, username
-    // válidos y la lista de contraseña 100% verde
-    // (incluyendo que coincidan).
     // ============================================
     function actualizarBotonSubmit() {
         const todoValido =
@@ -274,8 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         hideAlert(alertBox);
 
-        // Revalidación defensiva por si el botón se habilitó
-        // y el usuario cambió algo justo antes de enviar.
         nombreInput.dataset.tocado = '1';
         apellidoInput.dataset.tocado = '1';
         fechaInput.dataset.tocado = '1';
@@ -350,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // FUNCIONES AUXILIARES (DRY)
+    // FUNCIONES AUXILIARES
     // ============================================
     function showAlert(element, message, type) {
         element.textContent = message;
