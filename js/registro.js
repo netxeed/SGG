@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☀';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☀' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✅ ' : '❌ ') + texto;
+        elemento.textContent = (cumplido ? '✓ ' : '✗ ') + texto;
         elemento.classList.toggle('met', cumplido);
     }
 
@@ -342,11 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
         strengthText.textContent = 'Seguridad: Insegura';
         strengthText.className = 'strength-text';
         [reqLen, reqMin, reqMaj, reqNum, reqSym].forEach(el => el.classList.remove('met'));
-        reqLen.textContent = '❌ Mínimo 8 caracteres';
-        reqMin.textContent = '❌ Una letra minúscula';
-        reqMaj.textContent = '❌ Una letra mayúscula';
-        reqNum.textContent = '❌ Un número';
-        reqSym.textContent = '❌ Un símbolo (ej. !@#$%^&*)';
+        reqLen.textContent = '✗ Mínimo 8 caracteres';
+        reqMin.textContent = '✗ Una letra minúscula';
+        reqMaj.textContent = '✗ Una letra mayúscula';
+        reqNum.textContent = '✗ Un número';
+        reqSym.textContent = '✗ Un símbolo (ej. !@#$%^&*)';
     }
 
     // ============================================
