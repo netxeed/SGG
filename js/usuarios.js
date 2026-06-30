@@ -3,9 +3,7 @@
  * usuarios.js — Módulo compartido (Login, Registro, Recuperar)
  *
  * Centraliza el acceso al array de usuarios guardado en localStorage
- * bajo la clave 'usuarios_sgg'. Todos los scripts de la carpeta js/
- * deben usar estas funciones en lugar de tocar localStorage directamente,
- * para evitar inconsistencias entre páginas.
+ * bajo la clave 'usuarios_sgg'.
  */
 
 const SGG_STORAGE_KEY = 'usuarios_sgg';
@@ -29,8 +27,8 @@ function inicializarUsuarios() {
                 username: 'santino',
                 password: 'contrasena',
                 nombre: 'Santino',
-                apellido: 'Usuario',
-                fechaNacimiento: '1995-05-15'
+                apellido: 'Zerda',
+                fechaNacimiento: '2010-06-15'
             }
         ];
         localStorage.setItem(SGG_STORAGE_KEY, JSON.stringify(usuariosSemilla));
