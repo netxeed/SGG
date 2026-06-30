@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Panel principal.">
+    <title>SGG - Panel Principal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <h2 id="saludo">Hola</h2>
+            <p>Esta sección está en construcción</p>
+        </div>
+
+        <div class="hint-box" aria-label="Estado del panel">
+            <p>🚧 El panel de gestión de gastos todavía no está disponible.</p>
+            <p>Por ahora podés cambiar tu contraseña o cerrar sesión.</p>
+        </div>
+
+        <div class="auth-links" style="margin-top: 1.6rem;">
+            <a href="recuperar.html?modo=cambiar">Cambiar contraseña</a>
+            <span class="sep">|</span>
+            <a href="#" id="cerrarSesionLink">Cerrar sesión</a>
+        </div>
+
+    </div>
+
+    <script src="js/usuarios.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
