@@ -17,8 +17,9 @@
     <div class="auth-container">
 
         <div class="auth-header">
-            <h2 id="formTitle">Iniciar Sesión</h2>
-            <p id="formSubtitle">Introduce tus credenciales para acceder</p>
+            <h1>SGG</h1>
+            <h2>Iniciar Sesión</h2>
+            <p>Introduce tus credenciales para acceder</p>
         </div>
 
         <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
@@ -31,28 +32,19 @@
 
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
-
-                <div id="passwordStrengthWrapper" class="strength-wrapper" style="display: none;">
-                    <div class="strength-bar-container">
-                        <div id="strengthBar" class="strength-bar"></div>
-                    </div>
-                    <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
-                    <ul class="password-requirements">
-                        <li id="reqMin">❌ Una letra minúscula</li>
-                        <li id="reqMaj">❌ Una letra mayúscula</li>
-                        <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
-                    </ul>
+                <div class="password-field">
+                    <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
                 </div>
             </div>
 
             <button type="submit" id="btnSubmit" class="btn-submit">Ingresar</button>
         </form>
 
-        <!-- Consulta Registro -->
-        <div class="auth-toggle">
-            <span id="toggleText">¿No tenés cuenta?</span>
-            <a href="#" id="toggleFormLink">Registrate acá</a>
+        <!-- Enlaces de navegación -->
+        <div class="auth-links">
+            <a href="registro.html">Crear cuenta</a>
+            <span class="sep">|</span>
+            <a href="recuperar.html">Olvidé mi contraseña</a>
         </div>
 
         <!-- Usuarios de prueba -->
@@ -64,6 +56,8 @@
 
     </div>
 
+    <script src="js/usuarios.js"></script>
+    <script src="js/password-toggle.js"></script>
     <script src="js/login.js"></script>
 </body>
 </html>
