@@ -1,6 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Segundo Incremento
+ * login.js
  *
  * Depende de usuarios.js (debe cargarse antes en el HTML).
  */
