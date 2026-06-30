@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Creá tu cuenta para empezar a administrar tus finanzas.">
-    <title>SGG - Crear Cuenta</title>
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Recuperá o cambiá tu contraseña.">
+    <title>SGG - Recuperar Contraseña</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -16,43 +16,34 @@
     <div class="auth-container">
 
         <div class="auth-header">
-
-            <p>Completá tus datos para registrarte</p>
+            <h2 id="formTitle">Recuperar Contraseña</h2>
+            <p id="formSubtitle">Verificá tu identidad para continuar</p>
         </div>
 
         <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
 
-        <form id="registroForm" class="auth-form" novalidate>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="nombre">Nombre/s</label>
-                    <input type="text" id="nombre" required placeholder="Ej. Juan" autocomplete="given-name">
-                    <span class="field-error" id="errorNombre"></span>
-                </div>
-                <div class="form-group">
-                    <label for="apellido">Apellido/s</label>
-                    <input type="text" id="apellido" required placeholder="Ej. Pérez" autocomplete="family-name">
-                    <span class="field-error" id="errorApellido"></span>
-                </div>
+        <!-- PASO 1: Verificación de identidad (se oculta en modo "cambiar" con sesión activa) -->
+        <form id="verificarForm" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" required placeholder="Ej. admin" autocomplete="username">
             </div>
 
             <div class="form-group">
                 <label for="fechaNacimiento">Fecha de Nacimiento</label>
                 <input type="date" id="fechaNacimiento" required autocomplete="bday">
-                <span class="field-error" id="errorFecha"></span>
+                <span class="input-hint">Usá la misma fecha que ingresaste al registrarte.</span>
             </div>
 
-            <div class="form-group">
-                <label for="username">Nombre de Usuario</label>
-                <input type="text" id="username" required placeholder="Ej. juanperez" autocomplete="username">
-                <span class="field-error" id="errorUsername"></span>
-            </div>
+            <button type="submit" id="btnVerificar" class="btn-submit">Verificar identidad</button>
+        </form>
 
+        <!-- PASO 2: Nueva contraseña (oculto hasta verificar, o visible directo en modo "cambiar") -->
+        <form id="resetForm" class="auth-form" novalidate style="display: none;">
             <div class="form-group">
-                <label for="password">Contraseña</label>
+                <label for="passwordNueva">Nueva Contraseña</label>
                 <div class="password-field">
-                    <input type="password" id="password" required placeholder="••••••••" autocomplete="new-password">
+                    <input type="password" id="passwordNueva" required placeholder="••••••••" autocomplete="new-password">
                 </div>
 
                 <div id="passwordStrengthWrapper" class="strength-wrapper">
@@ -61,34 +52,35 @@
                     </div>
                     <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
                     <ul class="password-requirements">
-                        <li id="reqLen">✗ Mínimo 8 caracteres</li>
-                        <li id="reqMin">✗ Una letra minúscula</li>
-                        <li id="reqMaj">✗ Una letra mayúscula</li>
-                        <li id="reqNum">✗ Un número</li>
-                        <li id="reqSym">✗ Un símbolo (ej. !@#$%^&*)</li>
+                        <li id="reqLen">❌ Mínimo 8 caracteres</li>
+                        <li id="reqMin">❌ Una letra minúscula</li>
+                        <li id="reqMaj">❌ Una letra mayúscula</li>
+                        <li id="reqNum">❌ Un número</li>
+                        <li id="reqSym">❌ Un símbolo (ej. !@#$%^&*)</li>
                     </ul>
                 </div>
+                <span class="field-error" id="errorPasswordIgual"></span>
             </div>
 
             <div class="form-group">
-                <label for="passwordRepeat">Repetir Contraseña</label>
+                <label for="passwordRepeat">Repetir Nueva Contraseña</label>
                 <div class="password-field">
                     <input type="password" id="passwordRepeat" required placeholder="••••••••" autocomplete="new-password">
                 </div>
                 <span class="field-error" id="errorPasswordRepeat"></span>
             </div>
 
-            <button type="submit" id="btnSubmit" class="btn-submit" disabled>Registrarse</button>
+            <button type="submit" id="btnSubmit" class="btn-submit" disabled>Cambiar Contraseña</button>
         </form>
 
         <div class="auth-links">
-            <a href="index.html">Ya tengo cuenta, iniciar sesión</a>
+            <a href="index.html" id="volverLink">Volver a iniciar sesión</a>
         </div>
 
     </div>
 
     <script src="js/usuarios.js"></script>
     <script src="js/password-toggle.js"></script>
-    <script src="js/registro.js"></script>
+    <script src="js/recuperar.js"></script>
 </body>
 </html>
