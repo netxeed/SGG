@@ -4,10 +4,16 @@
  *
  * Depende de usuarios.js (debe cargarse antes en el HTML).
  *
- * Flujo en dos pasos:
- *  1) Verificar identidad: usuario + fecha de nacimiento.
- *  2) Si coincide, mostrar formulario de nueva contraseña
- *     (debe ser distinta a la guardada) + repetir.
+ * Dos modos de uso, mismo formulario:
+ *  - MODO RECUPERAR (sin sesión, default):
+ *      Paso 1) Verificar identidad: usuario + fecha de nacimiento.
+ *      Paso 2) Nueva contraseña (distinta a la guardada) + repetir.
+ *      Al terminar, vuelve a index.html.
+ *
+ *  - MODO CAMBIAR (con sesión activa, recuperar.html?modo=cambiar):
+ *      Se salta el Paso 1 (ya sabemos quién es por la sesión).
+ *      Va directo al Paso 2, sin saludo.
+ *      Al terminar, vuelve a dashboard.html.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,12 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☀';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☀' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -39,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const usernameInput  = document.getElementById('username');
     const fechaInput      = document.getElementById('fechaNacimiento');
-    const btnVerificar   = document.getElementById('btnVerificar');
 
     const passwordNuevaInput  = document.getElementById('passwordNueva');
     const passwordRepeatInput = document.getElementById('passwordRepeat');
@@ -58,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formSubtitle = document.getElementById('formSubtitle');
     const alertBox     = document.getElementById('alertBox');
     const btnSubmit    = document.getElementById('btnSubmit');
+    const volverLink   = document.getElementById('volverLink');
 
     let usuarioVerificado = null; // referencia al usuario una vez confirmada su identidad
 
@@ -68,7 +74,36 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ============================================
+    // DETECCIÓN DE MODO
+    // "cambiar" requiere sesión activa; si no hay
+    // sesión, se ignora el parámetro y se cae al
+    // flujo normal de recuperación.
+    // ============================================
+    const params = new URLSearchParams(window.location.search);
+    const modoCambiar = params.get('modo') === 'cambiar';
+    const sesion = obtenerSesion();
+
+    if (modoCambiar && sesion) {
+        const usuarioSesion = buscarUsuario(sesion.username);
+
+        if (usuarioSesion) {
+            usuarioVerificado = usuarioSesion;
+
+            // Saltamos el paso 1 directamente.
+            verificarForm.style.display = 'none';
+            resetForm.style.display = 'flex';
+
+            formTitle.textContent = 'Cambiar Contraseña';
+            formSubtitle.textContent = 'Elegí tu nueva contraseña';
+
+            volverLink.textContent = 'Volver al panel';
+            volverLink.setAttribute('href', 'dashboard.html');
+        }
+    }
+
+    // ============================================
     // PASO 1: VERIFICACIÓN DE IDENTIDAD
+    // (solo aplica en modo recuperar)
     // ============================================
     verificarForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -95,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         verificarForm.style.display = 'none';
         resetForm.style.display = 'flex';
         formTitle.textContent = 'Nueva Contraseña';
-        formSubtitle.textContent = `Hola ${usuario.nombre || usuario.username}, elegí tu nueva contraseña`;
+        formSubtitle.textContent = 'Elegí tu nueva contraseña';
     });
 
     // ============================================
@@ -161,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✅ ' : '❌ ') + texto;
+        elemento.textContent = (cumplido ? '✓ ' : '✗ ') + texto;
         elemento.classList.toggle('met', cumplido);
     }
 
@@ -231,9 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showAlert(alertBox, '¡Contraseña actualizada! Ya podés iniciar sesión.', 'success');
+        const destino = (modoCambiar && sesion) ? 'dashboard.html' : 'index.html';
+        showAlert(alertBox, '¡Contraseña actualizada!', 'success');
         resetForm.reset();
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        setTimeout(() => { window.location.href = destino; }, 1500);
     });
 
     // ============================================
