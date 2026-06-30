@@ -21,8 +21,8 @@ function inicializarUsuarios() {
             {
                 username: 'admin',
                 password: 'admin123',
-                nombre: 'Admin',
-                apellido: 'Sistema',
+                nombre: 'Administrador',
+                apellido: 'uno',
                 fechaNacimiento: '1990-01-01'
             },
             {
