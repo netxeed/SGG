@@ -1,6 +1,6 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Tercer Incremento
+ * login.js — Segundo Incremento
  *
  * Depende de usuarios.js (debe cargarse antes en el HTML).
  */
@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
+        themeIcon.textContent = '☀';
     }
 
     themeToggle.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.textContent = isDark ? '☀' : '☾';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
@@ -88,8 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
         } else {
             intentosFallidos = 0;
+            iniciarSesion(usuario.username);
             showAlert(alertBox, `¡Bienvenido, ${usuario.nombre || usuario.username}!`, 'success');
             clearForm(authForm);
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
         }
     });
 
