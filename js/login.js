@@ -1,27 +1,16 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * login.js — Segundo Incremento
+ * login.js — Tercer Incremento
+ *
+ * Depende de usuarios.js (debe cargarse antes en el HTML).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ============================================
-    // MÓDULO 1: USUARIOS PREDETERMINADOS
-    // ============================================
-    const DEFAULT_USERS = [
-        { username: 'admin',   password: 'admin123' },
-        { username: 'santino', password: 'contrasena' }
-    ];
-
-    DEFAULT_USERS.forEach(({ username, password }) => {
-        const key = `user_${username.toLowerCase()}`;
-        if (!localStorage.getItem(key)) {
-            localStorage.setItem(key, password);
-        }
-    });
+    inicializarUsuarios();
 
     // ============================================
-    // MÓDULO 2: SWITCH DE TEMA (DÍA / NOCHE)
+    // MÓDULO: SWITCH DE TEMA (DÍA / NOCHE)
     // ============================================
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
@@ -38,111 +27,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // MÓDULO 3: SELECTORES
+    // MÓDULO: SELECTORES
     // ============================================
-    const authForm                = document.getElementById('authForm');
-    const usernameInput           = document.getElementById('username');
-    const passwordInput           = document.getElementById('password');
-    const passwordStrengthWrapper = document.getElementById('passwordStrengthWrapper');
-    const strengthBar             = document.getElementById('strengthBar');
-    const strengthText            = document.getElementById('strengthText');
-    const reqMin                  = document.getElementById('reqMin');
-    const reqMaj                  = document.getElementById('reqMaj');
-    const reqSym                  = document.getElementById('reqSym');
-    const alertBox                = document.getElementById('alertBox');
-    const btnSubmit               = document.getElementById('btnSubmit');
-    const formTitle               = document.getElementById('formTitle');
-    const formSubtitle            = document.getElementById('formSubtitle');
-    const toggleFormLink          = document.getElementById('toggleFormLink');
-    const toggleText              = document.getElementById('toggleText');
-
-    let isLoginMode = true;
+    const authForm      = document.getElementById('authForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const alertBox      = document.getElementById('alertBox');
+    const btnSubmit     = document.getElementById('btnSubmit');
 
     // ============================================
-    // MÓDULO 4: ALTERNAR LOGIN / REGISTRO
+    // MÓDULO: BLOQUEO POR INTENTOS FALLIDOS (GLOBAL)
+    // 3 intentos fallidos consecutivos -> botón
+    // bloqueado 30 segundos.
     // ============================================
-    toggleFormLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        isLoginMode = !isLoginMode;
-        clearForm(authForm);
-        hideAlert(alertBox);
+    const MAX_INTENTOS    = 3;
+    const TIEMPO_BLOQUEO  = 30; // segundos
+    let intentosFallidos  = 0;
+    let intervaloCuenta   = null;
 
-        passwordStrengthWrapper.style.display = isLoginMode ? 'none' : 'block';
-        resetStrengthBar();
+    function bloquearBoton() {
+        let restante = TIEMPO_BLOQUEO;
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = `Bloqueado (${restante}s)`;
 
-        if (isLoginMode) {
-            formTitle.textContent      = 'Iniciar Sesión';
-            formSubtitle.textContent   = 'Introduce tus credenciales para acceder';
-            btnSubmit.textContent      = 'Ingresar';
-            toggleText.textContent     = '¿No tenés cuenta?';
-            toggleFormLink.textContent = 'Registrate acá';
-        } else {
-            formTitle.textContent      = 'Crear Cuenta';
-            formSubtitle.textContent   = 'Elegí un usuario y contraseña para registrarte';
-            btnSubmit.textContent      = 'Registrarse';
-            toggleText.textContent     = '¿Ya tenés cuenta?';
-            toggleFormLink.textContent = 'Iniciá sesión';
-        }
-    });
-    
+        intervaloCuenta = setInterval(() => {
+            restante--;
+            if (restante <= 0) {
+                clearInterval(intervaloCuenta);
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Ingresar';
+                intentosFallidos = 0;
+            } else {
+                btnSubmit.textContent = `Bloqueado (${restante}s)`;
+            }
+        }, 1000);
+    }
+
     // ============================================
-    // MÓDULO 4.5: EVALUACIÓN DE CONTRASEÑA EN TIEMPO REAL
-    // ============================================
-    passwordInput.addEventListener('input', (e) => {
-        if (isLoginMode) return; 
-
-        const password = e.target.value;
-        let strength = 0;
-
-        const hasMin = /[a-z]/.test(password);
-        const hasMaj = /[A-Z]/.test(password);
-        const hasSym = /[^a-zA-Z0-9]/.test(password);
-
-        reqMin.textContent = hasMin ? '✅ Una letra minúscula' : '❌ Una letra minúscula';
-        reqMin.classList.toggle('met', hasMin);
-
-        reqMaj.textContent = hasMaj ? '✅ Una letra mayúscula' : '❌ Una letra mayúscula';
-        reqMaj.classList.toggle('met', hasMaj);
-
-        reqSym.textContent = hasSym ? '✅ Un símbolo (ej. !@#$%^&*)' : '❌ Un símbolo (ej. !@#$%^&*)';
-        reqSym.classList.toggle('met', hasSym);
-
-        if (password.length >= 6) strength++;
-        if (hasMin) strength++;
-        if (hasMaj) strength++;
-        if (hasSym) strength++;
-
-        strengthBar.className = 'strength-bar';
-        strengthText.className = 'strength-text';
-
-        if (password.length === 0) {
-            strengthBar.style.width = '0%';
-            strengthText.textContent = 'Seguridad: Insegura';
-        } else if (strength <= 1) {
-            strengthBar.style.width = '25%';
-            strengthBar.classList.add('level-1');
-            strengthText.textContent = 'Seguridad: Débil';
-            strengthText.classList.add('level-1');
-        } else if (strength === 2) {
-            strengthBar.style.width = '50%';
-            strengthBar.classList.add('level-2');
-            strengthText.textContent = 'Seguridad: Regular';
-            strengthText.classList.add('level-2');
-        } else if (strength === 3) {
-            strengthBar.style.width = '75%';
-            strengthBar.classList.add('level-3');
-            strengthText.textContent = 'Seguridad: Buena';
-            strengthText.classList.add('level-3');
-        } else {
-            strengthBar.style.width = '100%';
-            strengthBar.classList.add('level-4');
-            strengthText.textContent = 'Seguridad: Fuerte';
-            strengthText.classList.add('level-4');
-        }
-    });
-    
-    // ============================================
-    // MÓDULO 5: LÓGICA DE LOGIN / REGISTRO
+    // MÓDULO: LÓGICA DE LOGIN
     // ============================================
     authForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -156,36 +78,27 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const storageKey     = `user_${username.toLowerCase()}`;
-        const storedPassword = localStorage.getItem(storageKey);
+        const usuario = buscarUsuario(username);
 
-        if (isLoginMode) {
-            if (!storedPassword) {
-                showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
-            } else if (storedPassword !== password) {
-                showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
-            } else {
-                showAlert(alertBox, `¡Bienvenido, ${username}!`, 'success');
-                clearForm(authForm);
-            }
+        if (!usuario) {
+            registrarIntentoFallido();
+            showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
+        } else if (usuario.password !== password) {
+            registrarIntentoFallido();
+            showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
         } else {
-            const isSecure = /[a-z]/.test(password) && 
-                             /[A-Z]/.test(password) && 
-                             /[^a-zA-Z0-9]/.test(password) &&
-                             password.length >= 6;
-
-            if (storedPassword) {
-                showAlert(alertBox, 'El nombre de usuario ya está registrado.', 'error');
-            } else if (!isSecure) {
-                showAlert(alertBox, 'La contraseña no cumple con los requisitos de seguridad.', 'error');
-            } else {
-                localStorage.setItem(storageKey, password);
-                showAlert(alertBox, '¡Registro exitoso! Ya podés iniciar sesión.', 'success');
-                clearForm(authForm);
-                setTimeout(() => toggleFormLink.click(), 1200);
-            }
+            intentosFallidos = 0;
+            showAlert(alertBox, `¡Bienvenido, ${usuario.nombre || usuario.username}!`, 'success');
+            clearForm(authForm);
         }
     });
+
+    function registrarIntentoFallido() {
+        intentosFallidos++;
+        if (intentosFallidos >= MAX_INTENTOS) {
+            bloquearBoton();
+        }
+    }
 
     // ============================================
     // FUNCIONES AUXILIARES (DRY)
@@ -202,29 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function clearForm(formElement) {
         formElement.reset();
-    }
-
-    function resetStrengthBar() {
-        if (strengthBar) {
-            strengthBar.style.width = '0%';
-            strengthBar.className = 'strength-bar';
-        }
-        if (strengthText) {
-            strengthText.textContent = 'Seguridad: Insegura';
-            strengthText.className = 'strength-text';
-        }
-        if (reqMin) {
-            reqMin.textContent = '❌ Una letra minúscula';
-            reqMin.classList.remove('met');
-        }
-        if (reqMaj) {
-            reqMaj.textContent = '❌ Una letra mayúscula';
-            reqMaj.classList.remove('met');
-        }
-        if (reqSym) {
-            reqSym.textContent = '❌ Un símbolo (ej. !@#$%^*)';
-            reqSym.classList.remove('met');
-        }
     }
 
 });
