@@ -387,9 +387,117 @@ body.dark-mode .alert-message.success {
     transition: background-color 0.4s ease;
 }
 
+/* --- CAMPO DE CONTRASEÑA CON TOGGLE --- */
+.password-field {
+    position: relative;
+    display: flex;
+}
+
+.password-field input {
+    padding-right: 2.8rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 1.05rem;
+    cursor: pointer;
+    padding: 0.5rem 0.7rem;
+    line-height: 1;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    background-color: var(--input-bg);
+}
+
+.toggle-password:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 1px;
+}
+
+/* --- BOTÓN SUBMIT DESHABILITADO --- */
+.btn-submit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-submit:disabled:hover {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+}
+
+/* --- MENSAJE DE ERROR POR CAMPO --- */
+.field-error {
+    font-size: 0.76rem;
+    color: var(--error-color);
+    margin-top: 0.15rem;
+    min-height: 0;
+    transition: color 0.4s ease;
+}
+
+.form-group input.input-invalid {
+    border-color: var(--error-color);
+}
+
+/* --- FILA DE DOS COLUMNAS (Nombre / Apellido) --- */
+.form-row {
+    display: flex;
+    gap: 0.9rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+/* --- ENLACES DE NAVEGACIÓN (index) --- */
+.auth-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 1.1rem;
+    font-size: 0.85rem;
+}
+
+.auth-links a {
+    color: var(--text-link);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-links .sep {
+    color: var(--text-muted);
+}
+
+/* --- TEXTO DE AYUDA BAJO INPUT --- */
+.input-hint {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
 /* --- RESPONSIVO --- */
 @media (max-width: 480px) {
     .auth-container {
         padding: 2rem 1.3rem 1.6rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 1.1rem;
     }
 }
