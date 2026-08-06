@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         hideAlert(alertBox);
 
+        if (btnSubmit.disabled) {
+             e.preventDefault();
+              return;
+        }
+
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 

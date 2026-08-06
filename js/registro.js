@@ -2,7 +2,7 @@
  * SGG - Sistema de Gestión de Gastos
  * registro.js
  *
- * Depende de usuarios.js (debe cargarse antes en el HTML).
+ * Depende de usuarios.js y password-strength.js (deben cargarse antes en el HTML).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -61,14 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
         nombre: false,
         apellido: false,
         fecha: false,
-        username: true,   // se valida recién al intentar enviar (duplicado)
+        username: false,   // ahora es false por defecto
         passwordSegura: false,
         passwordsCoinciden: false
     };
 
     // ============================================
+    // FUNCIÓN AUXILIAR PARA ERRORES (accesibilidad)
+    // ============================================
+    function setFieldError(input, errorEl, esValido, mensaje) {
+        const mostrarError = !esValido && input.dataset.tocado === '1';
+        input.classList.toggle('input-invalid', mostrarError);
+        errorEl.textContent = mostrarError ? mensaje : '';
+
+        // Atributos ARIA
+        input.setAttribute('aria-invalid', mostrarError ? 'true' : 'false');
+        input.setAttribute('aria-describedby', errorEl.id);
+        errorEl.setAttribute('role', 'alert');
+    }
+
+    // ============================================
     // VALIDACIÓN: NOMBRE / APELLIDO
-    // Trim + solo letras (sin números ni símbolos)
     // ============================================
     function validarNombreApellido(input, errorEl, campo) {
         const valor = input.value.trim();
@@ -83,8 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mensaje = 'Solo se permiten letras (sin números ni símbolos).';
         }
 
-        input.classList.toggle('input-invalid', !esValido && input.dataset.tocado === '1');
-        errorEl.textContent = (!esValido && input.dataset.tocado === '1') ? mensaje : '';
+        setFieldError(input, errorEl, esValido, mensaje);
         estado[campo] = esValido;
         actualizarBotonSubmit();
         return esValido;
@@ -103,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     apellidoInput.addEventListener('input', () => validarNombreApellido(apellidoInput, errorApellido, 'apellido'));
 
     // ============================================
-    // VALIDACIÓN: FECHA DE NACIMIENTO (edad >= 14)
+    // VALIDACIÓN: FECHA DE NACIMIENTO
     // ============================================
     function validarFecha() {
         const valor = fechaInput.value;
@@ -127,8 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        fechaInput.classList.toggle('input-invalid', !esValido && fechaInput.dataset.tocado === '1');
-        errorFecha.textContent = (!esValido && fechaInput.dataset.tocado === '1') ? mensaje : '';
+        setFieldError(fechaInput, errorFecha, esValido, mensaje);
         estado.fecha = esValido;
         actualizarBotonSubmit();
         return esValido;
@@ -150,14 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (valor.length === 0) {
             esValido = false;
+            mensaje = 'Este campo es obligatorio.';
         } else if (existeUsuario(valor)) {
             esValido = false;
             mensaje = 'Ese nombre de usuario ya está en uso.';
         }
 
-        usernameInput.classList.toggle('input-invalid', !esValido && usernameInput.dataset.tocado === '1' && valor.length > 0);
-        errorUsername.textContent = (!esValido && usernameInput.dataset.tocado === '1' && valor.length > 0) ? mensaje : '';
-        estado.username = esValido || valor.length === 0; // no bloquea el botón hasta que escriba algo inválido
+        setFieldError(usernameInput, errorUsername, esValido, mensaje);
+        estado.username = esValido;
         actualizarBotonSubmit();
         return esValido;
     }
@@ -169,58 +180,18 @@ document.addEventListener('DOMContentLoaded', () => {
     usernameInput.addEventListener('input', validarUsername);
 
     // ============================================
-    // VALIDACIÓN DE CONTRASEÑA EN TIEMPO REAL
+    // VALIDACIÓN DE CONTRASEÑA (usa módulo externo)
     // ============================================
     passwordInput.addEventListener('input', () => {
-        const password = passwordInput.value;
-        const checks = evaluarPassword(password);
-
-        actualizarRequisito(reqLen, checks.longitud, 'Mínimo 8 caracteres');
-        actualizarRequisito(reqMin, checks.minuscula, 'Una letra minúscula');
-        actualizarRequisito(reqMaj, checks.mayuscula, 'Una letra mayúscula');
-        actualizarRequisito(reqNum, checks.numero, 'Un número');
-        actualizarRequisito(reqSym, checks.simbolo, 'Un símbolo (ej. !@#$%^&*)');
-
-        const cantidadCumplidos = [checks.longitud, checks.minuscula, checks.mayuscula, checks.numero, checks.simbolo]
-            .filter(Boolean).length;
-
-        strengthBar.className = 'strength-bar';
-        strengthText.className = 'strength-text';
-
-        if (password.length === 0) {
-            strengthBar.style.width = '0%';
-            strengthText.textContent = 'Seguridad: Insegura';
-        } else if (cantidadCumplidos <= 2) {
-            strengthBar.style.width = '25%';
-            strengthBar.classList.add('level-1');
-            strengthText.textContent = 'Seguridad: Débil';
-            strengthText.classList.add('level-1');
-        } else if (cantidadCumplidos === 3) {
-            strengthBar.style.width = '50%';
-            strengthBar.classList.add('level-2');
-            strengthText.textContent = 'Seguridad: Regular';
-            strengthText.classList.add('level-2');
-        } else if (cantidadCumplidos === 4) {
-            strengthBar.style.width = '75%';
-            strengthBar.classList.add('level-3');
-            strengthText.textContent = 'Seguridad: Buena';
-            strengthText.classList.add('level-3');
-        } else {
-            strengthBar.style.width = '100%';
-            strengthBar.classList.add('level-4');
-            strengthText.textContent = 'Seguridad: Fuerte';
-            strengthText.classList.add('level-4');
-        }
-
-        estado.passwordSegura = checks.esValida;
+        estado.passwordSegura = actualizarFortaleza(
+            passwordInput,
+            strengthBar,
+            strengthText,
+            { reqLen, reqMin, reqMaj, reqNum, reqSym }
+        );
         validarRepeticion();
         actualizarBotonSubmit();
     });
-
-    function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✓ ' : '✗ ') + texto;
-        elemento.classList.toggle('met', cumplido);
-    }
 
     // ============================================
     // VALIDACIÓN: REPETIR CONTRASEÑA
@@ -233,15 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (repetida.length === 0) {
             esValido = false;
+            // No mostramos error si está vacío, solo si hay discrepancia
         } else if (password !== repetida) {
             esValido = false;
             mensaje = 'Las contraseñas no coinciden.';
         }
 
-        const mostrarError = repetida.length > 0 && !esValido;
-        passwordRepeatInput.classList.toggle('input-invalid', mostrarError);
-        errorPasswordRepeat.textContent = mostrarError ? mensaje : '';
-
+        setFieldError(passwordRepeatInput, errorPasswordRepeat, esValido, mensaje);
         estado.passwordsCoinciden = esValido && repetida.length > 0;
         actualizarBotonSubmit();
         return estado.passwordsCoinciden;
@@ -251,9 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // HABILITAR / DESHABILITAR BOTÓN SUBMIT
-    // Se requiere: nombre, apellido, fecha, username
-    // válidos y la lista de contraseña 100% verde
-    // (incluyendo que coincidan).
     // ============================================
     function actualizarBotonSubmit() {
         const todoValido =
@@ -274,8 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         hideAlert(alertBox);
 
-        // Revalidación defensiva por si el botón se habilitó
-        // y el usuario cambió algo justo antes de enviar.
+        // Revalidamos todo
         nombreInput.dataset.tocado = '1';
         apellidoInput.dataset.tocado = '1';
         fechaInput.dataset.tocado = '1';
@@ -284,16 +249,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombreOk   = validarNombreApellido(nombreInput, errorNombre, 'nombre');
         const apellidoOk = validarNombreApellido(apellidoInput, errorApellido, 'apellido');
         const fechaOk    = validarFecha();
-        const usernameOk = validarUsername() && usernameInput.value.trim().length > 0;
+        validarUsername(); // actualiza estado.username
         const repiteOk   = validarRepeticion();
-        const passwordChecks = evaluarPassword(passwordInput.value);
 
-        if (!nombreOk || !apellidoOk || !fechaOk || !usernameOk) {
+        if (!nombreOk || !apellidoOk || !fechaOk || !estado.username) {
             showAlert(alertBox, 'Revisá los campos marcados antes de continuar.', 'error');
             return;
         }
 
-        if (!passwordChecks.esValida) {
+        if (!estado.passwordSegura) {
             showAlert(alertBox, 'La contraseña no cumple con los requisitos de seguridad.', 'error');
             return;
         }
@@ -326,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         estado.nombre = false;
         estado.apellido = false;
         estado.fecha = false;
-        estado.username = true;
+        estado.username = false;
         estado.passwordSegura = false;
         estado.passwordsCoinciden = false;
         actualizarBotonSubmit();
@@ -334,8 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
         [nombreInput, apellidoInput, fechaInput, usernameInput, passwordRepeatInput].forEach(el => {
             el.classList.remove('input-invalid');
             el.dataset.tocado = '0';
+            el.removeAttribute('aria-invalid');
         });
-        [errorNombre, errorApellido, errorFecha, errorUsername, errorPasswordRepeat].forEach(el => el.textContent = '');
+        [errorNombre, errorApellido, errorFecha, errorUsername, errorPasswordRepeat].forEach(el => {
+            el.textContent = '';
+            el.removeAttribute('role');
+        });
 
         strengthBar.style.width = '0%';
         strengthBar.className = 'strength-bar';
@@ -355,11 +323,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function showAlert(element, message, type) {
         element.textContent = message;
         element.className   = `alert-message ${type}`;
+        element.setAttribute('role', 'alert');
     }
 
     function hideAlert(element) {
         element.textContent = '';
         element.className   = 'alert-message';
+        element.removeAttribute('role');
     }
 
 });

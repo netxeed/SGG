@@ -2,7 +2,7 @@
  * SGG - Sistema de Gestión de Gastos
  * recuperar.js
  *
- * Depende de usuarios.js (debe cargarse antes en el HTML).
+ * Depende de usuarios.js y password-strength.js (deben cargarse antes en el HTML).
  *
  * Dos modos de uso, mismo formulario:
  *  - MODO RECUPERAR (sin sesión, default):
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubmit    = document.getElementById('btnSubmit');
     const volverLink   = document.getElementById('volverLink');
 
-    let usuarioVerificado = null; // referencia al usuario una vez confirmada su identidad
+    let usuarioVerificado = null;
 
     const estado = {
         passwordSegura: false,
@@ -74,10 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ============================================
+    // FUNCIÓN AUXILIAR PARA ERRORES (accesibilidad)
+    // ============================================
+    function setFieldError(input, errorEl, esValido, mensaje, mostrar = true) {
+        const mostrarError = mostrar && !esValido && mensaje.length > 0;
+        input.classList.toggle('input-invalid', mostrarError);
+        errorEl.textContent = mostrarError ? mensaje : '';
+
+        input.setAttribute('aria-invalid', mostrarError ? 'true' : 'false');
+        input.setAttribute('aria-describedby', errorEl.id);
+        errorEl.setAttribute('role', 'alert');
+    }
+
+    // ============================================
     // DETECCIÓN DE MODO
-    // "cambiar" requiere sesión activa; si no hay
-    // sesión, se ignora el parámetro y se cae al
-    // flujo normal de recuperación.
     // ============================================
     const params = new URLSearchParams(window.location.search);
     const modoCambiar = params.get('modo') === 'cambiar';
@@ -88,8 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (usuarioSesion) {
             usuarioVerificado = usuarioSesion;
-
-            // Saltamos el paso 1 directamente.
             verificarForm.style.display = 'none';
             resetForm.style.display = 'flex';
 
@@ -98,12 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             volverLink.textContent = 'Volver al panel';
             volverLink.setAttribute('href', 'dashboard.html');
+        } else {
+            // Usuario de sesión no existe en el almacenamiento
+            cerrarSesion();
+            window.location.href = 'index.html';
+            return;
         }
     }
 
     // ============================================
     // PASO 1: VERIFICACIÓN DE IDENTIDAD
-    // (solo aplica en modo recuperar)
     // ============================================
     verificarForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -137,69 +149,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // PASO 2: VALIDACIÓN DE NUEVA CONTRASEÑA
     // ============================================
     passwordNuevaInput.addEventListener('input', () => {
-        const password = passwordNuevaInput.value;
-        const checks = evaluarPassword(password);
-
-        actualizarRequisito(reqLen, checks.longitud, 'Mínimo 8 caracteres');
-        actualizarRequisito(reqMin, checks.minuscula, 'Una letra minúscula');
-        actualizarRequisito(reqMaj, checks.mayuscula, 'Una letra mayúscula');
-        actualizarRequisito(reqNum, checks.numero, 'Un número');
-        actualizarRequisito(reqSym, checks.simbolo, 'Un símbolo (ej. !@#$%^&*)');
-
-        const cantidadCumplidos = [checks.longitud, checks.minuscula, checks.mayuscula, checks.numero, checks.simbolo]
-            .filter(Boolean).length;
-
-        strengthBar.className = 'strength-bar';
-        strengthText.className = 'strength-text';
-
-        if (password.length === 0) {
-            strengthBar.style.width = '0%';
-            strengthText.textContent = 'Seguridad: Insegura';
-        } else if (cantidadCumplidos <= 2) {
-            strengthBar.style.width = '25%';
-            strengthBar.classList.add('level-1');
-            strengthText.textContent = 'Seguridad: Débil';
-            strengthText.classList.add('level-1');
-        } else if (cantidadCumplidos === 3) {
-            strengthBar.style.width = '50%';
-            strengthBar.classList.add('level-2');
-            strengthText.textContent = 'Seguridad: Regular';
-            strengthText.classList.add('level-2');
-        } else if (cantidadCumplidos === 4) {
-            strengthBar.style.width = '75%';
-            strengthBar.classList.add('level-3');
-            strengthText.textContent = 'Seguridad: Buena';
-            strengthText.classList.add('level-3');
-        } else {
-            strengthBar.style.width = '100%';
-            strengthBar.classList.add('level-4');
-            strengthText.textContent = 'Seguridad: Fuerte';
-            strengthText.classList.add('level-4');
-        }
-
-        estado.passwordSegura = checks.esValida;
+        estado.passwordSegura = actualizarFortaleza(
+            passwordNuevaInput,
+            strengthBar,
+            strengthText,
+            { reqLen, reqMin, reqMaj, reqNum, reqSym }
+        );
 
         // Comparación contra la contraseña actual guardada
-        if (usuarioVerificado && password.length > 0) {
-            const esIgual = password === usuarioVerificado.password;
+        if (usuarioVerificado && passwordNuevaInput.value.length > 0) {
+            const esIgual = passwordNuevaInput.value === usuarioVerificado.password;
             estado.passwordDistinta = !esIgual;
-            errorPasswordIgual.textContent = esIgual ? 'La nueva contraseña no puede ser igual a la actual.' : '';
-            passwordNuevaInput.classList.toggle('input-invalid', esIgual);
+            setFieldError(
+                passwordNuevaInput,
+                errorPasswordIgual,
+                !esIgual,
+                'La nueva contraseña no puede ser igual a la actual.',
+                true
+            );
         } else {
             estado.passwordDistinta = false;
-            errorPasswordIgual.textContent = '';
-            passwordNuevaInput.classList.remove('input-invalid');
+            setFieldError(passwordNuevaInput, errorPasswordIgual, true, '', false);
         }
 
         validarRepeticion();
         actualizarBotonSubmit();
     });
 
-    function actualizarRequisito(elemento, cumplido, texto) {
-        elemento.textContent = (cumplido ? '✓ ' : '✗ ') + texto;
-        elemento.classList.toggle('met', cumplido);
-    }
-
+    // ============================================
+    // VALIDACIÓN: REPETIR CONTRASEÑA
+    // ============================================
     function validarRepeticion() {
         const password = passwordNuevaInput.value;
         const repetida  = passwordRepeatInput.value;
@@ -208,15 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (repetida.length === 0) {
             esValido = false;
+            // No mostramos error si está vacío
         } else if (password !== repetida) {
             esValido = false;
             mensaje = 'Las contraseñas no coinciden.';
         }
 
-        const mostrarError = repetida.length > 0 && !esValido;
-        passwordRepeatInput.classList.toggle('input-invalid', mostrarError);
-        errorPasswordRepeat.textContent = mostrarError ? mensaje : '';
-
+        setFieldError(passwordRepeatInput, errorPasswordRepeat, esValido, mensaje, true);
         estado.passwordsCoinciden = esValido && repetida.length > 0;
         actualizarBotonSubmit();
         return estado.passwordsCoinciden;
@@ -224,6 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     passwordRepeatInput.addEventListener('input', validarRepeticion);
 
+    // ============================================
+    // HABILITAR / DESHABILITAR BOTÓN SUBMIT
+    // ============================================
     function actualizarBotonSubmit() {
         btnSubmit.disabled = !(estado.passwordSegura && estado.passwordsCoinciden && estado.passwordDistinta);
     }
@@ -278,11 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function showAlert(element, message, type) {
         element.textContent = message;
         element.className   = `alert-message ${type}`;
+        element.setAttribute('role', 'alert');
     }
 
     function hideAlert(element) {
         element.textContent = '';
         element.className   = 'alert-message';
+        element.removeAttribute('role');
     }
 
 });
