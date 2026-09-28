@@ -1,9 +1,7 @@
 /* ============================================
    SGG - Sistema de Gestión de Gastos
-   style.css — Segundo Incremento
+   style.css — Tercer Incremento
    ============================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* --- MODO CLARO (por defecto) --- */
 :root {
@@ -32,12 +30,12 @@
 }
 
 /* --- MODO OSCURO --- */
-body.dark-mode {
+html.dark-mode {
     --bg-gradient:      linear-gradient(135deg, #0f0f1a 0%, #1a1030 100%);
     --card-bg:          #1c1c2e;
     --card-border:      rgba(129, 140, 248, 0.22);
     --text-main:        #e8e8f4;
-    --text-muted:       #8888aa;
+    --text-muted:       #9a9ab8;
     --text-label:       #b0b0cc;
     --text-link:        #818cf8;
     --primary-color:    #818cf8;
@@ -176,7 +174,7 @@ body {
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
-body.dark-mode .form-group input:focus {
+html.dark-mode .form-group input:focus {
     box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
 }
 
@@ -219,10 +217,10 @@ body.dark-mode .form-group input:focus {
 .strength-text.level-3 { color: #2563eb; }
 .strength-text.level-4 { color: #059669; }
 
-body.dark-mode .strength-text.level-1 { color: #ff5a6e; }
-body.dark-mode .strength-text.level-2 { color: #fbbf24; }
-body.dark-mode .strength-text.level-3 { color: #60a5fa; }
-body.dark-mode .strength-text.level-4 { color: #34d374; }
+html.dark-mode .strength-text.level-1 { color: #ff5a6e; }
+html.dark-mode .strength-text.level-2 { color: #fbbf24; }
+html.dark-mode .strength-text.level-3 { color: #60a5fa; }
+html.dark-mode .strength-text.level-4 { color: #34d374; }
 
 .password-requirements {
     list-style: none;
@@ -300,34 +298,14 @@ body.dark-mode .strength-text.level-4 { color: #34d374; }
     border-left: 3px solid var(--success-color);
 }
 
-body.dark-mode .alert-message.error {
+html.dark-mode .alert-message.error {
     background-color: #3a1520;
     color: #ff5a6e;
 }
 
-body.dark-mode .alert-message.success {
+html.dark-mode .alert-message.success {
     background-color: #0d2e1c;
     color: #34d374;
-}
-
-/* --- TOGGLE LOGIN/REGISTRO --- */
-.auth-toggle {
-    text-align: center;
-    margin-top: 1.4rem;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    transition: color 0.4s ease;
-}
-
-.auth-toggle a {
-    color: var(--text-link);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.auth-toggle a:hover {
-    text-decoration: underline;
 }
 
 /* --- CAJA DE USUARIOS DE PRUEBA --- */
@@ -356,26 +334,6 @@ body.dark-mode .alert-message.success {
     color: var(--primary-color);
     font-weight: 600;
     transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-/* --- DIVISOR --- */
-.divider {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin: 0.2rem 0;
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    transition: color 0.4s ease;
-}
-
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background-color: var(--hint-border);
-    transition: background-color 0.4s ease;
 }
 
 /* --- CAMPO DE CONTRASEÑA CON TOGGLE --- */
@@ -486,7 +444,23 @@ body.dark-mode .alert-message.success {
     margin-top: 0.1rem;
 }
 
+/* --- UTILIDADES --- */
+.hidden {
+    display: none !important;
+}
+
+.auth-links.spaced {
+    margin-top: 1.6rem;
+}
+
+/* --- FOCO VISIBLE PARA TECLADO --- */
+.theme-toggle:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
 /* --- RESPONSIVO --- */
+
 @media (max-width: 480px) {
     .auth-container {
         padding: 2rem 1.3rem 1.6rem;

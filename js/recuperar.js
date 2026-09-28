@@ -2,18 +2,13 @@
  * SGG - Sistema de Gestión de Gastos
  * recuperar.js
  *
- * Depende de usuarios.js y password-strength.js (deben cargarse antes en el HTML).
+ * Depende de usuarios.js, ui.js y password-strength.js.
  *
- * Dos modos de uso, mismo formulario:
- *  - MODO RECUPERAR (sin sesión, default):
- *      Paso 1) Verificar identidad: usuario + fecha de nacimiento.
- *      Paso 2) Nueva contraseña (distinta a la guardada) + repetir.
- *      Al terminar, vuelve a index.html.
- *
- *  - MODO CAMBIAR (con sesión activa, recuperar.html?modo=cambiar):
- *      Se salta el Paso 1 (ya sabemos quién es por la sesión).
- *      Va directo al Paso 2, sin saludo.
- *      Al terminar, vuelve a dashboard.html.
+ * Dos modos, mismo formulario:
+ *  - RECUPERAR (sin sesión): Paso 1 verifica usuario + fecha de nacimiento,
+ *    Paso 2 pide la nueva contraseña. Al terminar vuelve a index.html.
+ *  - CAMBIAR (recuperar.html?modo=cambiar, con sesión): salta el Paso 1.
+ *    Al terminar vuelve a dashboard.html.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,30 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     inicializarUsuarios();
 
     // ============================================
-    // SWITCH DE TEMA
-    // ============================================
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon   = document.getElementById('themeIcon');
-
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        themeIcon.textContent = '☀';
-    }
-
-    themeToggle.addEventListener('click', () => {
-        const isDark = document.body.classList.toggle('dark-mode');
-        themeIcon.textContent = isDark ? '☀' : '☾';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-
-    // ============================================
     // SELECTORES
     // ============================================
     const verificarForm = document.getElementById('verificarForm');
-    const resetForm      = document.getElementById('resetForm');
+    const resetForm     = document.getElementById('resetForm');
 
-    const usernameInput  = document.getElementById('username');
-    const fechaInput      = document.getElementById('fechaNacimiento');
+    const usernameInput = document.getElementById('username');
+    const fechaInput    = document.getElementById('fechaNacimiento');
 
     const passwordNuevaInput  = document.getElementById('passwordNueva');
     const passwordRepeatInput = document.getElementById('passwordRepeat');
@@ -53,11 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const strengthBar  = document.getElementById('strengthBar');
     const strengthText = document.getElementById('strengthText');
-    const reqLen = document.getElementById('reqLen');
-    const reqMin = document.getElementById('reqMin');
-    const reqMaj = document.getElementById('reqMaj');
-    const reqNum = document.getElementById('reqNum');
-    const reqSym = document.getElementById('reqSym');
+    const reqElements = {
+        reqLen: document.getElementById('reqLen'),
+        reqMin: document.getElementById('reqMin'),
+        reqMaj: document.getElementById('reqMaj'),
+        reqNum: document.getElementById('reqNum'),
+        reqSym: document.getElementById('reqSym')
+    };
 
     const formTitle    = document.getElementById('formTitle');
     const formSubtitle = document.getElementById('formSubtitle');
@@ -73,17 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordDistinta: false
     };
 
-    // ============================================
-    // FUNCIÓN AUXILIAR PARA ERRORES (accesibilidad)
-    // ============================================
-    function setFieldError(input, errorEl, esValido, mensaje, mostrar = true) {
-        const mostrarError = mostrar && !esValido && mensaje.length > 0;
-        input.classList.toggle('input-invalid', mostrarError);
-        errorEl.textContent = mostrarError ? mensaje : '';
+    // Dibuja los requisitos de contraseña desde el módulo compartido
+    actualizarFortaleza(passwordNuevaInput, strengthBar, strengthText, reqElements);
 
-        input.setAttribute('aria-invalid', mostrarError ? 'true' : 'false');
-        input.setAttribute('aria-describedby', errorEl.id);
-        errorEl.setAttribute('role', 'alert');
+    function mostrarPaso2() {
+        verificarForm.classList.add('hidden');
+        resetForm.classList.remove('hidden');
     }
 
     // ============================================
@@ -96,22 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modoCambiar && sesion) {
         const usuarioSesion = buscarUsuario(sesion.username);
 
-        if (usuarioSesion) {
-            usuarioVerificado = usuarioSesion;
-            verificarForm.style.display = 'none';
-            resetForm.style.display = 'flex';
-
-            formTitle.textContent = 'Cambiar Contraseña';
-            formSubtitle.textContent = 'Elegí tu nueva contraseña';
-
-            volverLink.textContent = 'Volver al panel';
-            volverLink.setAttribute('href', 'dashboard.html');
-        } else {
-            // Usuario de sesión no existe en el almacenamiento
+        if (!usuarioSesion) {
             cerrarSesion();
             window.location.href = 'index.html';
             return;
         }
+
+        usuarioVerificado = usuarioSesion;
+        mostrarPaso2();
+        formTitle.textContent = 'Cambiar Contraseña';
+        formSubtitle.textContent = 'Elegí tu nueva contraseña';
+        volverLink.textContent = 'Volver al panel';
+        volverLink.setAttribute('href', 'dashboard.html');
     }
 
     // ============================================
@@ -137,63 +108,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         usuarioVerificado = usuario;
-        hideAlert(alertBox);
-
-        verificarForm.style.display = 'none';
-        resetForm.style.display = 'flex';
+        mostrarPaso2();
         formTitle.textContent = 'Nueva Contraseña';
         formSubtitle.textContent = 'Elegí tu nueva contraseña';
     });
 
     // ============================================
-    // PASO 2: VALIDACIÓN DE NUEVA CONTRASEÑA
+    // PASO 2: NUEVA CONTRASEÑA
     // ============================================
     passwordNuevaInput.addEventListener('input', () => {
         estado.passwordSegura = actualizarFortaleza(
-            passwordNuevaInput,
-            strengthBar,
-            strengthText,
-            { reqLen, reqMin, reqMaj, reqNum, reqSym }
+            passwordNuevaInput, strengthBar, strengthText, reqElements
         );
 
-        // Comparación contra la contraseña actual guardada
+        // Debe ser distinta de la contraseña actual
         if (usuarioVerificado && passwordNuevaInput.value.length > 0) {
             const esIgual = passwordNuevaInput.value === usuarioVerificado.password;
             estado.passwordDistinta = !esIgual;
             setFieldError(
-                passwordNuevaInput,
-                errorPasswordIgual,
-                !esIgual,
-                'La nueva contraseña no puede ser igual a la actual.',
-                true
+                passwordNuevaInput, errorPasswordIgual, !esIgual,
+                'La nueva contraseña no puede ser igual a la actual.'
             );
         } else {
             estado.passwordDistinta = false;
-            setFieldError(passwordNuevaInput, errorPasswordIgual, true, '', false);
+            setFieldError(passwordNuevaInput, errorPasswordIgual, true, '');
         }
 
         validarRepeticion();
         actualizarBotonSubmit();
     });
 
-    // ============================================
-    // VALIDACIÓN: REPETIR CONTRASEÑA
-    // ============================================
     function validarRepeticion() {
         const password = passwordNuevaInput.value;
-        const repetida  = passwordRepeatInput.value;
+        const repetida = passwordRepeatInput.value;
         let esValido = true;
         let mensaje = '';
 
         if (repetida.length === 0) {
             esValido = false;
-            // No mostramos error si está vacío
         } else if (password !== repetida) {
             esValido = false;
             mensaje = 'Las contraseñas no coinciden.';
         }
 
-        setFieldError(passwordRepeatInput, errorPasswordRepeat, esValido, mensaje, true);
+        setFieldError(passwordRepeatInput, errorPasswordRepeat, esValido, mensaje);
         estado.passwordsCoinciden = esValido && repetida.length > 0;
         actualizarBotonSubmit();
         return estado.passwordsCoinciden;
@@ -201,15 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     passwordRepeatInput.addEventListener('input', validarRepeticion);
 
-    // ============================================
-    // HABILITAR / DESHABILITAR BOTÓN SUBMIT
-    // ============================================
     function actualizarBotonSubmit() {
         btnSubmit.disabled = !(estado.passwordSegura && estado.passwordsCoinciden && estado.passwordDistinta);
     }
 
     // ============================================
-    // ENVÍO: CAMBIO DE CONTRASEÑA
+    // ENVÍO
     // ============================================
     resetForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -221,19 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const nuevaPassword = passwordNuevaInput.value;
-        const repetida       = passwordRepeatInput.value;
-        const checks = evaluarPassword(nuevaPassword);
 
-        if (!checks.esValida) {
+        if (!evaluarPassword(nuevaPassword).esValida) {
             showAlert(alertBox, 'La contraseña no cumple con los requisitos de seguridad.', 'error');
             return;
         }
-
-        if (nuevaPassword !== repetida) {
+        if (nuevaPassword !== passwordRepeatInput.value) {
             showAlert(alertBox, 'Las contraseñas no coinciden.', 'error');
             return;
         }
-
         if (nuevaPassword === usuarioVerificado.password) {
             showAlert(alertBox, 'La nueva contraseña no puede ser igual a la actual.', 'error');
             return;
@@ -251,20 +202,5 @@ document.addEventListener('DOMContentLoaded', () => {
         resetForm.reset();
         setTimeout(() => { window.location.href = destino; }, 1500);
     });
-
-    // ============================================
-    // FUNCIONES AUXILIARES (DRY)
-    // ============================================
-    function showAlert(element, message, type) {
-        element.textContent = message;
-        element.className   = `alert-message ${type}`;
-        element.setAttribute('role', 'alert');
-    }
-
-    function hideAlert(element) {
-        element.textContent = '';
-        element.className   = 'alert-message';
-        element.removeAttribute('role');
-    }
 
 });

@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SGG - Sistema de Gestión de Gastos. Recuperá o cambiá tu contraseña.">
     <title>SGG - Recuperar Contraseña</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
 </head>
 <body>
 
-    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
-        <span id="themeIcon">☾</span>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">
+        <span id="themeIcon" aria-hidden="true">☾</span>
     </button>
 
     <div class="auth-container">
@@ -22,7 +26,7 @@
 
         <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
 
-        <!-- PASO 1: Verificación de identidad (se oculta en modo "cambiar" con sesión activa) -->
+        <!-- PASO 1: verificación de identidad (se oculta en modo "cambiar") -->
         <form id="verificarForm" class="auth-form" novalidate>
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
@@ -38,8 +42,8 @@
             <button type="submit" id="btnVerificar" class="btn-submit">Verificar identidad</button>
         </form>
 
-        <!-- PASO 2: Nueva contraseña (oculto hasta verificar, o visible directo en modo "cambiar") -->
-        <form id="resetForm" class="auth-form" novalidate style="display: none;">
+        <!-- PASO 2: nueva contraseña (oculto hasta verificar) -->
+        <form id="resetForm" class="auth-form hidden" novalidate>
             <div class="form-group">
                 <label for="passwordNueva">Nueva Contraseña</label>
                 <div class="password-field">
@@ -52,14 +56,14 @@
                     </div>
                     <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
                     <ul class="password-requirements">
-                        <li id="reqLen">✗ Mínimo 8 caracteres</li>
-                        <li id="reqMin">✗ Una letra minúscula</li>
-                        <li id="reqMaj">✗ Una letra mayúscula</li>
-                        <li id="reqNum">✗ Un número</li>
-                        <li id="reqSym">✗ Un símbolo (ej. !@#$%^&*)</li>
+                        <li id="reqLen"></li>
+                        <li id="reqMin"></li>
+                        <li id="reqMaj"></li>
+                        <li id="reqNum"></li>
+                        <li id="reqSym"></li>
                     </ul>
                 </div>
-                <span class="field-error" id="errorPasswordIgual"></span>
+                <span class="field-error" id="errorPasswordIgual" role="alert"></span>
             </div>
 
             <div class="form-group">
@@ -67,7 +71,7 @@
                 <div class="password-field">
                     <input type="password" id="passwordRepeat" required placeholder="••••••••" autocomplete="new-password">
                 </div>
-                <span class="field-error" id="errorPasswordRepeat"></span>
+                <span class="field-error" id="errorPasswordRepeat" role="alert"></span>
             </div>
 
             <button type="submit" id="btnSubmit" class="btn-submit" disabled>Cambiar Contraseña</button>
@@ -80,6 +84,7 @@
     </div>
 
     <script src="js/usuarios.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/password-strength.js"></script>
     <script src="js/password-toggle.js"></script>
     <script src="js/recuperar.js"></script>
