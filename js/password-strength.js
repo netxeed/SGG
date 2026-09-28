@@ -3,7 +3,7 @@
  * password-strength.js — Módulo compartido para validación de contraseña
  *
  * Depende de usuarios.js (para evaluarPassword).
- * Es la ÚNICA fuente de los textos de requisitos: llamar a
+ * Es la única fuente de los textos de requisitos: llamar a
  * actualizarFortaleza() al iniciar la página también los dibuja.
  */
 

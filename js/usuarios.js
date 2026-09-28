@@ -5,9 +5,6 @@
  * Centraliza el acceso al array de usuarios guardado en localStorage
  * bajo la clave 'usuarios_sgg'. Todos los scripts deben usar estas
  * funciones en lugar de tocar localStorage directamente.
- *
- * NOTA: proyecto práctico. Las contraseñas se guardan en texto plano
- * a propósito (no hay backend). Ver README.md.
  */
 
 const SGG_STORAGE_KEY = 'usuarios_sgg';
