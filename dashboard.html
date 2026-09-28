@@ -3,41 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Panel principal.">
-    <title>SGG - Panel Principal</title>
+    <meta name="description" content="SGG - Sistema de Gestión de Gastos. Panel de gastos.">
+    <title>SGG - Mis Gastos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/theme.js"></script>
 </head>
-<body>
+<body class="dashboard-body">
 
     <button id="themeToggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">
         <span id="themeIcon" aria-hidden="true">☾</span>
     </button>
 
-    <div class="auth-container">
+    <div class="dashboard-page">
 
-        <div class="auth-header">
-            <h2 id="saludo">Hola</h2>
-            <p>Esta sección está en construcción</p>
-        </div>
+        <header class="dashboard-header">
+            <div>
+                <h1 id="saludo">Hola</h1>
+                <p>Registrá y revisá tus gastos personales.</p>
+            </div>
+            <nav class="dashboard-nav">
+                <a href="recuperar.html?modo=cambiar">Cambiar contraseña</a>
+                <a href="#" id="cerrarSesionLink">Cerrar sesión</a>
+            </nav>
+        </header>
 
-        <div class="hint-box" aria-label="Estado del panel">
-            <p>El panel de gestión de gastos todavía no está disponible.</p>
-            <p>Por ahora podés cambiar tu contraseña o cerrar sesión.</p>
-        </div>
+        <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
 
-        <div class="auth-links spaced">
-            <a href="recuperar.html?modo=cambiar">Cambiar contraseña</a>
-            <span class="sep">|</span>
-            <a href="#" id="cerrarSesionLink">Cerrar sesión</a>
+        <section class="summary-card">
+            <p class="summary-label">Total gastado</p>
+            <p class="summary-total" id="totalGastado">$0,00</p>
+            <p class="summary-count" id="cantidadGastos">0 gastos registrados</p>
+        </section>
+
+        <div class="dashboard-grid">
+
+            <section class="panel form-panel">
+                <h2 id="formGastoTitle">Agregar gasto</h2>
+
+                <form id="gastoForm" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label for="monto">Monto</label>
+                        <input type="number" id="monto" step="0.01" min="0.01" required placeholder="Ej. 1500.50" inputmode="decimal">
+                        <span class="field-error" id="errorMonto" role="alert"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" required>
+                        <span class="field-error" id="errorFecha" role="alert"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" required>
+                            <option value="" disabled selected>Seleccioná una categoría</option>
+                            <option value="Alimentación">Alimentación</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Servicios">Servicios</option>
+                            <option value="Ocio">Ocio</option>
+                            <option value="Salud">Salud</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                        <span class="field-error" id="errorCategoria" role="alert"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" id="descripcion" required maxlength="100" placeholder="Ej. Almuerzo con amigos">
+                        <span class="field-error" id="errorDescripcion" role="alert"></span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btnGuardarGasto" class="btn-submit">Agregar gasto</button>
+                        <button type="button" id="btnCancelarEdicion" class="btn-cancel hidden">Cancelar edición</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel table-panel">
+                <h2>Historial de gastos</h2>
+
+                <div id="tablaWrapper" class="table-wrapper hidden">
+                    <table class="gastos-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Categoría</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                                <th><span class="visually-hidden">Acciones</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="gastosBody"></tbody>
+                    </table>
+                </div>
+
+                <p id="emptyState" class="empty-state">Todavía no cargaste gastos.</p>
+            </section>
+
         </div>
 
     </div>
 
+    <!-- Modal de confirmación: baja lógica -->
+    <div id="modalEliminar" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalEliminarTitle">
+        <div class="modal-box">
+            <h2 id="modalEliminarTitle">Eliminar gasto</h2>
+            <p>¿Seguro que querés eliminar este gasto? Vas a dejar de verlo en tu historial y en el total.</p>
+            <div class="modal-actions">
+                <button type="button" id="btnCancelarModal" class="btn-cancel">Cancelar</button>
+                <button type="button" id="btnConfirmarEliminar" class="btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/usuarios.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/gastos.js"></script>
 </body>
 </html>

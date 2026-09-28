@@ -6,7 +6,6 @@
  * bajo la clave 'usuarios_sgg'. Todos los scripts deben usar estas
  * funciones en lugar de tocar localStorage directamente.
  */
-
 const SGG_STORAGE_KEY = 'usuarios_sgg';
 const EDAD_MINIMA     = 14;
 const FECHA_MINIMA    = '1900-01-01';
