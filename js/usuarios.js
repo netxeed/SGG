@@ -1,19 +1,21 @@
 /**
  * SGG - Sistema de Gestión de Gastos
- * usuarios.js — Módulo compartido (Login, Registro, Recuperar)
+ * usuarios.js — Módulo compartido (Login, Registro, Recuperar, Dashboard)
  *
  * Centraliza el acceso al array de usuarios guardado en localStorage
- * bajo la clave 'usuarios_sgg'. Todos los scripts de la carpeta js/
- * deben usar estas funciones en lugar de tocar localStorage directamente,
- * para evitar inconsistencias entre páginas.
+ * bajo la clave 'usuarios_sgg'. Todos los scripts deben usar estas
+ * funciones en lugar de tocar localStorage directamente.
+ *
+ * NOTA: proyecto práctico. Las contraseñas se guardan en texto plano
+ * a propósito (no hay backend). Ver README.md.
  */
 
 const SGG_STORAGE_KEY = 'usuarios_sgg';
+const EDAD_MINIMA     = 14;
+const FECHA_MINIMA    = '1900-01-01';
 
 /* ============================================
    SEMILLA INICIAL
-   Si todavía no existe el array en localStorage,
-   lo creamos con los usuarios de prueba originales.
    ============================================ */
 function inicializarUsuarios() {
     if (localStorage.getItem(SGG_STORAGE_KEY) === null) {
@@ -38,7 +40,7 @@ function inicializarUsuarios() {
 }
 
 /* ============================================
-   LECTURA / ESCRITURA DEL ARRAY COMPLETO
+   LECTURA / ESCRITURA
    ============================================ */
 function obtenerUsuarios() {
     inicializarUsuarios();
@@ -60,9 +62,8 @@ function guardarUsuarios(usuarios) {
    ============================================ */
 function buscarUsuario(username) {
     if (!username) return null;
-    const usuarios = obtenerUsuarios();
     const usernameLower = username.trim().toLowerCase();
-    return usuarios.find(u => u.username.toLowerCase() === usernameLower) || null;
+    return obtenerUsuarios().find(u => u.username.toLowerCase() === usernameLower) || null;
 }
 
 function existeUsuario(username) {
@@ -70,14 +71,93 @@ function existeUsuario(username) {
 }
 
 /* ============================================
-   ALTA (usado por registro.js)
-   Previene duplicados de usuario (case-insensitive).
+   VALIDACIONES
+   ============================================ */
+
+/** Mín. 8 caracteres, mayúscula, minúscula, número y símbolo. */
+function evaluarPassword(password) {
+    const checks = {
+        longitud:   password.length >= 8,
+        mayuscula:  /[A-Z]/.test(password),
+        minuscula:  /[a-z]/.test(password),
+        numero:     /[0-9]/.test(password),
+        simbolo:    /[^a-zA-Z0-9]/.test(password)
+    };
+    checks.esValida = Object.values(checks).every(Boolean);
+    return checks;
+}
+
+/**
+ * Solo letras (con acentos y ñ). Permite espacios, apóstrofes y guiones
+ * ENTRE palabras: "María José", "D'Angelo", "María-José".
+ */
+function validarSoloLetras(texto) {
+    const limpio = texto.trim();
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü]+(?:[ '’-][A-Za-zÁÉÍÓÚáéíóúÑñÜü]+)*$/;
+    return regex.test(limpio);
+}
+
+/** Fecha de hoy en formato 'YYYY-MM-DD' usando la zona horaria local. */
+function fechaHoyISO() {
+    const h = new Date();
+    const mm = String(h.getMonth() + 1).padStart(2, '0');
+    const dd = String(h.getDate()).padStart(2, '0');
+    return `${h.getFullYear()}-${mm}-${dd}`;
+}
+
+/** Edad cumplida a partir de 'YYYY-MM-DD'. Devuelve null si es inválida. */
+function calcularEdad(fechaNacimientoStr) {
+    if (!fechaNacimientoStr) return null;
+
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimientoStr + 'T00:00:00');
+    if (isNaN(nacimiento.getTime())) return null;
+
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mesDiff = hoy.getMonth() - nacimiento.getMonth();
+    const diaDiff = hoy.getDate() - nacimiento.getDate();
+    if (mesDiff < 0 || (mesDiff === 0 && diaDiff < 0)) edad--;
+
+    return edad;
+}
+
+/**
+ * Valida una fecha de nacimiento. Devuelve '' si es válida o el mensaje de error.
+ * (Comparación de strings ISO: evita problemas de hora y zona horaria.)
+ */
+function validarFechaNacimiento(valor) {
+    if (!valor) return 'Ingresá tu fecha de nacimiento.';
+    if (valor > fechaHoyISO()) return 'La fecha no puede ser futura.';
+    if (valor < FECHA_MINIMA) return 'Ingresá una fecha válida.';
+    const edad = calcularEdad(valor);
+    if (edad === null || edad < EDAD_MINIMA) {
+        return `Debés tener al menos ${EDAD_MINIMA} años para registrarte.`;
+    }
+    return '';
+}
+
+/* ============================================
+   ALTA (registro.js)
+   Revalida todo: no confía solo en el formulario.
    Devuelve { ok: boolean, mensaje: string }
    ============================================ */
 function agregarUsuario({ username, password, nombre, apellido, fechaNacimiento }) {
+    if (!username || !username.trim()) {
+        return { ok: false, mensaje: 'El nombre de usuario es obligatorio.' };
+    }
+    if (!validarSoloLetras(nombre || '') || !validarSoloLetras(apellido || '')) {
+        return { ok: false, mensaje: 'Nombre y apellido solo pueden contener letras.' };
+    }
+    if (validarFechaNacimiento(fechaNacimiento)) {
+        return { ok: false, mensaje: validarFechaNacimiento(fechaNacimiento) };
+    }
+    if (!evaluarPassword(password || '').esValida) {
+        return { ok: false, mensaje: 'La contraseña no cumple con los requisitos de seguridad.' };
+    }
     if (existeUsuario(username)) {
         return { ok: false, mensaje: 'El nombre de usuario ya está registrado.' };
     }
+
     const usuarios = obtenerUsuarios();
     usuarios.push({
         username: username.trim(),
@@ -91,11 +171,13 @@ function agregarUsuario({ username, password, nombre, apellido, fechaNacimiento 
 }
 
 /* ============================================
-   EDICIÓN (usado por recuperar.js)
-   Actualiza la contraseña del usuario encontrado.
-   Devuelve { ok: boolean, mensaje: string }
+   EDICIÓN (recuperar.js)
    ============================================ */
 function actualizarPassword(username, nuevaPassword) {
+    if (!evaluarPassword(nuevaPassword || '').esValida) {
+        return { ok: false, mensaje: 'La contraseña no cumple con los requisitos de seguridad.' };
+    }
+
     const usuarios = obtenerUsuarios();
     const usernameLower = username.trim().toLowerCase();
     const idx = usuarios.findIndex(u => u.username.toLowerCase() === usernameLower);
@@ -110,64 +192,7 @@ function actualizarPassword(username, nuevaPassword) {
 }
 
 /* ============================================
-   VALIDACIÓN DE CONTRASEÑA SEGURA
-   Mín. 8 caracteres, 1 mayúscula, 1 minúscula,
-   1 número y 1 símbolo.
-   Devuelve un objeto con cada requisito + el global.
-   ============================================ */
-function evaluarPassword(password) {
-    const checks = {
-        longitud:   password.length >= 8,
-        mayuscula:  /[A-Z]/.test(password),
-        minuscula:  /[a-z]/.test(password),
-        numero:     /[0-9]/.test(password),
-        simbolo:    /[^a-zA-Z0-9]/.test(password)
-    };
-    checks.esValida = Object.values(checks).every(Boolean);
-    return checks;
-}
-
-/* ============================================
-   VALIDACIÓN DE NOMBRE / APELLIDO
-   Solo letras (incluye acentos y ñ) y espacios.
-   Recorta espacios al inicio/fin antes de validar.
-   ============================================ */
-function validarSoloLetras(texto) {
-    const limpio = texto.trim();
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
-    return limpio.length > 0 && regex.test(limpio);
-}
-
-/* ============================================
-   CÁLCULO DE EDAD
-   A partir de una fecha 'YYYY-MM-DD', calcula la
-   edad cumplida respecto a hoy.
-   ============================================ */
-function calcularEdad(fechaNacimientoStr) {
-    if (!fechaNacimientoStr) return null;
-
-    const hoy = new Date();
-    const nacimiento = new Date(fechaNacimientoStr + 'T00:00:00');
-
-    if (isNaN(nacimiento.getTime())) return null;
-
-    let edad = hoy.getFullYear() - nacimiento.getFullYear();
-    const mesDiff = hoy.getMonth() - nacimiento.getMonth();
-    const diaDiff = hoy.getDate() - nacimiento.getDate();
-
-    if (mesDiff < 0 || (mesDiff === 0 && diaDiff < 0)) {
-        edad--;
-    }
-
-    return edad;
-}
-
-/* ============================================
-   SESIÓN ACTIVA
-   Se guarda en sessionStorage (se borra al cerrar
-   la pestaña/navegador) para distinguir un login
-   válido del simple hecho de tener el array de
-   usuarios en localStorage.
+   SESIÓN ACTIVA (sessionStorage)
    ============================================ */
 const SGG_SESSION_KEY = 'sesion_sgg';
 

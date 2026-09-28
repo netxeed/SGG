@@ -5,18 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SGG - Sistema de Gestión de Gastos. Creá tu cuenta para empezar a administrar tus finanzas.">
     <title>SGG - Crear Cuenta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
 </head>
 <body>
 
-    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
-        <span id="themeIcon">☾</span>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">
+        <span id="themeIcon" aria-hidden="true">☾</span>
     </button>
 
     <div class="auth-container">
 
         <div class="auth-header">
-
+            <h2>Crear Cuenta</h2>
             <p>Completá tus datos para registrarte</p>
         </div>
 
@@ -28,25 +32,25 @@
                 <div class="form-group">
                     <label for="nombre">Nombre/s</label>
                     <input type="text" id="nombre" required placeholder="Ej. Juan" autocomplete="given-name">
-                    <span class="field-error" id="errorNombre"></span>
+                    <span class="field-error" id="errorNombre" role="alert"></span>
                 </div>
                 <div class="form-group">
                     <label for="apellido">Apellido/s</label>
                     <input type="text" id="apellido" required placeholder="Ej. Pérez" autocomplete="family-name">
-                    <span class="field-error" id="errorApellido"></span>
+                    <span class="field-error" id="errorApellido" role="alert"></span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="fechaNacimiento">Fecha de Nacimiento</label>
                 <input type="date" id="fechaNacimiento" required autocomplete="bday">
-                <span class="field-error" id="errorFecha"></span>
+                <span class="field-error" id="errorFecha" role="alert"></span>
             </div>
 
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
                 <input type="text" id="username" required placeholder="Ej. juanperez" autocomplete="username">
-                <span class="field-error" id="errorUsername"></span>
+                <span class="field-error" id="errorUsername" role="alert"></span>
             </div>
 
             <div class="form-group">
@@ -61,11 +65,11 @@
                     </div>
                     <p id="strengthText" class="strength-text">Seguridad: Insegura</p>
                     <ul class="password-requirements">
-                        <li id="reqLen">✗ Mínimo 8 caracteres</li>
-                        <li id="reqMin">✗ Una letra minúscula</li>
-                        <li id="reqMaj">✗ Una letra mayúscula</li>
-                        <li id="reqNum">✗ Un número</li>
-                        <li id="reqSym">✗ Un símbolo (ej. !@#$%^&*)</li>
+                        <li id="reqLen"></li>
+                        <li id="reqMin"></li>
+                        <li id="reqMaj"></li>
+                        <li id="reqNum"></li>
+                        <li id="reqSym"></li>
                     </ul>
                 </div>
             </div>
@@ -75,7 +79,7 @@
                 <div class="password-field">
                     <input type="password" id="passwordRepeat" required placeholder="••••••••" autocomplete="new-password">
                 </div>
-                <span class="field-error" id="errorPasswordRepeat"></span>
+                <span class="field-error" id="errorPasswordRepeat" role="alert"></span>
             </div>
 
             <button type="submit" id="btnSubmit" class="btn-submit" disabled>Registrarse</button>
@@ -88,6 +92,7 @@
     </div>
 
     <script src="js/usuarios.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/password-strength.js"></script>
     <script src="js/password-toggle.js"></script>
     <script src="js/registro.js"></script>

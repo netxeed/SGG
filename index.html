@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SGG - Sistema de Gestión de Gastos. Iniciá sesión o registrate para administrar tus finanzas personales.">
     <title>SGG - Inicio de Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
 </head>
 <body>
 
-    <!-- Botón switch día/noche -->
-    <button id="themeToggle" class="theme-toggle" aria-label="Alternar modo claro y oscuro">
-        <span id="themeIcon">☾</span>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">
+        <span id="themeIcon" aria-hidden="true">☾</span>
     </button>
 
     <div class="auth-container">
 
         <div class="auth-header">
             <h2>Iniciar Sesión</h2>
-            <p>Introduce tus credenciales para acceder</p>
+            <p>Introducí tus credenciales para acceder</p>
         </div>
 
         <div id="alertBox" class="alert-message" role="alert" aria-live="polite"></div>
@@ -39,14 +42,12 @@
             <button type="submit" id="btnSubmit" class="btn-submit">Ingresar</button>
         </form>
 
-        <!-- Enlaces de navegación -->
         <div class="auth-links">
             <a href="registro.html">Crear cuenta</a>
             <span class="sep">|</span>
             <a href="recuperar.html">Olvidé mi contraseña</a>
         </div>
 
-        <!-- Usuarios de prueba -->
         <div class="hint-box" aria-label="Usuarios de prueba disponibles">
             <p><strong>Usuarios de prueba:</strong></p>
             <p>▸ <code>admin</code> / <code>admin123</code></p>
@@ -56,6 +57,7 @@
     </div>
 
     <script src="js/usuarios.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/password-toggle.js"></script>
     <script src="js/login.js"></script>
 </body>
