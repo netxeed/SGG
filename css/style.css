@@ -1,6 +1,6 @@
 /* ============================================
    SGG - Sistema de Gestión de Gastos
-   style.css — Tercer Incremento
+   style.css — Segundo Incremento (revisado)
    ============================================ */
 
 /* --- MODO CLARO (por defecto) --- */
@@ -489,13 +489,22 @@ body.dashboard-body {
     gap: 1.4rem;
 }
 
-/* --- ENCABEZADO --- */
+/* --- ENCABEZADO ---
+   Ahora es una tarjeta más (igual que .summary-card y .panel), así
+   que usa las mismas variables de texto pensadas para --card-bg
+   (--text-main, --text-muted, --text-link) en vez de blanco fijo. */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
     flex-wrap: wrap;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--card-border);
+    padding: 1.4rem 1.8rem;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .dashboard-header h1 {
@@ -520,16 +529,24 @@ body.dashboard-body {
 }
 
 .dashboard-nav a {
-    color: var(--text-link);
+    color: var(--primary-hover);
     text-decoration: none;
     font-weight: 600;
+    transition: color 0.3s ease;
 }
 
 .dashboard-nav a:hover {
     text-decoration: underline;
 }
 
+.dashboard-nav a:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
 /* --- TARJETA DE RESUMEN --- */
+
 .summary-card {
     background-color: var(--card-bg);
     border-radius: var(--radius-lg);
