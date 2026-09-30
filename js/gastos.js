@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Conservamos id, username y estado_activo; solo actualizamos los datos editables.
             gastos[idx] = { ...gastos[idx], ...datos };
             guardarGastos(gastos);
-            showAlert(alertBox, '¡Gasto actualizado!', 'success');
+            showAlert(alertBox, '¡Gasto actualizado!', 'success', 3000);
         } else {
             gastos.push({
                 id: generarIdGasto(),
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ...datos
             });
             guardarGastos(gastos);
-            showAlert(alertBox, '¡Gasto registrado!', 'success');
+            showAlert(alertBox, '¡Gasto registrado!', 'success', 3000);
         }
 
         salirDeModoEdicion();
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         cerrarModalEliminar();
-        showAlert(alertBox, 'Gasto eliminado.', 'success');
+        showAlert(alertBox, 'Gasto eliminado.', 'success', 3000);
         render();
     });
 

@@ -6,9 +6,13 @@
  * ya traen sus atributos ARIA en el HTML; acá solo cambiamos el contenido.
  */
 
-function showAlert(element, message, type) {
+let alertTimeoutId = null;
+
+function showAlert(element, message, type, autoHideMs) {
     element.textContent = message;
     element.className   = `alert-message ${type}`;
+    if (alertTimeoutId) clearTimeout(alertTimeoutId);
+    alertTimeoutId = autoHideMs ? setTimeout(() => hideAlert(element), autoHideMs) : null;
 }
 
 function hideAlert(element) {
