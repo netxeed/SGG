@@ -10,6 +10,10 @@ const SGG_STORAGE_KEY = 'usuarios_sgg';
 const EDAD_MINIMA     = 14;
 const FECHA_MINIMA    = '1900-01-01';
 
+// Límites alineados con las columnas de sql/sgg.sql
+const MAX_USERNAME    = 50;
+const MAX_NOMBRE      = 100;   // nombre y apellido
+
 /* ============================================
    SEMILLA INICIAL
    ============================================ */
@@ -140,6 +144,12 @@ function validarFechaNacimiento(valor) {
 function agregarUsuario({ username, password, nombre, apellido, fechaNacimiento }) {
     if (!username || !username.trim()) {
         return { ok: false, mensaje: 'El nombre de usuario es obligatorio.' };
+    }
+    if (username.trim().length > MAX_USERNAME) {
+        return { ok: false, mensaje: `El nombre de usuario no puede superar los ${MAX_USERNAME} caracteres.` };
+    }
+    if ((nombre || '').trim().length > MAX_NOMBRE || (apellido || '').trim().length > MAX_NOMBRE) {
+        return { ok: false, mensaje: `Nombre y apellido no pueden superar los ${MAX_NOMBRE} caracteres.` };
     }
     if (!validarSoloLetras(nombre || '') || !validarSoloLetras(apellido || '')) {
         return { ok: false, mensaje: 'Nombre y apellido solo pueden contener letras.' };

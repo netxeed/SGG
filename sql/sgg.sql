@@ -93,6 +93,10 @@ CREATE INDEX idx_gastos_categoria
 -- Los mismos usuarios de prueba y categorías que ya usa la app en
 -- localStorage, para poder migrar/comparar 1 a 1.
 -- ============================================
+-- ATENCIÓN: la app actual guarda las contraseñas en texto plano (localStorage),
+-- y estos valores semilla también. La columna se llama password_hash porque el
+-- objetivo es guardar un hash (bcrypt/argon2) cuando exista un backend; antes
+-- de usar esta base con datos reales hay que hashear estos valores.
 INSERT INTO usuarios (username, password_hash, nombre, apellido, fecha_nacimiento) VALUES
     ('admin',   'admin123',   'Administrador', 'uno',   '1990-01-01'),
     ('santino', 'contrasena', 'Santino',       'Zerda', '2010-06-15');
