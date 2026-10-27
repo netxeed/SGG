@@ -144,13 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // CONTRASEÑA
     // ============================================
-    passwordInput.addEventListener('input', () => {
+    function revalidarPassword() {
         estado.passwordSegura = actualizarFortaleza(
             passwordInput, strengthBar, strengthText, reqElements
         );
         validarRepeticion();
         actualizarBotonSubmit();
-    });
+    }
+
+    // 'change' cubre el autocompletado del navegador, que no siempre dispara 'input'
+    passwordInput.addEventListener('input', revalidarPassword);
+    passwordInput.addEventListener('change', revalidarPassword);
 
     function validarRepeticion() {
         const password = passwordInput.value;
@@ -172,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     passwordRepeatInput.addEventListener('input', validarRepeticion);
+    passwordRepeatInput.addEventListener('change', validarRepeticion);
 
     // ============================================
     // BOTÓN SUBMIT
@@ -195,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const apellidoOk = validarNombreApellido(apellidoInput, errorApellido, 'apellido');
         const fechaOk    = validarFecha();
         const usuarioOk  = validarUsername();
+        estado.passwordSegura = evaluarPassword(passwordInput.value).esValida;
         const repiteOk   = validarRepeticion();
 
         if (!nombreOk || !apellidoOk || !fechaOk || !usuarioOk) {

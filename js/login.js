@@ -97,12 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const usuario = buscarUsuario(username);
 
-        if (!usuario) {
+        // Mensaje único para usuario inexistente y contraseña incorrecta:
+        // así no se puede averiguar qué usuarios existen.
+        if (!usuario || usuario.password !== password) {
             registrarIntentoFallido();
-            showAlert(alertBox, 'Usuario no registrado. ¿Querés crear una cuenta?', 'error');
-        } else if (usuario.password !== password) {
-            registrarIntentoFallido();
-            showAlert(alertBox, 'Contraseña incorrecta. Intentá de nuevo.', 'error');
+            showAlert(alertBox, 'Usuario o contraseña incorrectos.', 'error');
         } else {
             sessionStorage.removeItem(BLOQUEO_KEY);
             iniciarSesion(usuario.username);

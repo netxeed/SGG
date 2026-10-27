@@ -529,7 +529,7 @@ body.dashboard-body {
 }
 
 .dashboard-nav a {
-    color: var(--primary-hover);
+    color: var(--text-link);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
@@ -816,6 +816,12 @@ html.dark-mode .badge-otros         { background-color: #2a2a45; color: #b0b0cc;
 
 /* --- RESPONSIVO --- */
 
+@media (max-width: 860px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 480px) {
     .auth-container {
         padding: 2rem 1.3rem 1.6rem;
@@ -825,15 +831,7 @@ html.dark-mode .badge-otros         { background-color: #2a2a45; color: #b0b0cc;
         flex-direction: column;
         gap: 1.1rem;
     }
-}
 
-@media (max-width: 860px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
     body.dashboard-body {
         padding-top: 3.5rem;
     }

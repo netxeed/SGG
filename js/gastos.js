@@ -1,11 +1,11 @@
 /**
  * SGG - Sistema de Gestión de Gastos
  * gastos.js
- *
+ *  
  * CRUD de gastos con baja lógica (soft delete).
  * Depende de usuarios.js (sesión, fechaHoyISO) y ui.js (alertas y errores).
  *
- * Reemplaza a dashboard.js: además del CRUD, este archivo protege la
+ * Reemplazó al antiguo dashboard.js (eliminado): además del CRUD, este archivo protege la
  * ruta privada, muestra el saludo y gestiona el cierre de sesión.
  *
  * Cada gasto se guarda en localStorage bajo la clave 'gastos_sgg' como:
@@ -18,6 +18,7 @@
  */
 
 const GASTOS_STORAGE_KEY = 'gastos_sgg';
+const MONTO_MAXIMO = 9999999999.99; // límite de DECIMAL(12,2) en sql/sgg.sql
 const CATEGORIAS_GASTO = ['Alimentación', 'Transporte', 'Servicios', 'Ocio', 'Salud', 'Otros'];
 
 const CLASE_POR_CATEGORIA = {
@@ -140,8 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
 
     fechaInput.max = fechaHoyISO();
+    fechaInput.min = FECHA_MINIMA;
 
-    let idEnEdicion            = null; // null = modo "Agregar"; string = modo "Editar"
+    let idEnEdicion           = null; // null = modo "Agregar"; string = modo "Editar"
     let idPendienteDeEliminar  = null;
     let elementoQueAbrioModal  = null; // para devolver el foco al cerrar el modal
 
@@ -230,6 +232,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (isNaN(monto) || monto <= 0) {
             esValido = false;
             mensaje = 'El monto debe ser mayor a cero.';
+        } else if (monto > MONTO_MAXIMO) {
+            esValido = false;
+            mensaje = 'El monto es demasiado alto.';
         }
 
         mostrarError(montoInput, errorMonto, esValido, mensaje);
@@ -247,6 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (valor > fechaHoyISO()) {
             esValido = false;
             mensaje = 'La fecha no puede ser futura.';
+        } else if (valor < FECHA_MINIMA) {
+            esValido = false;
+            mensaje = 'Ingresá una fecha válida.';
         }
 
         mostrarError(fechaInput, errorFecha, esValido, mensaje);
